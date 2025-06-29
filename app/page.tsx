@@ -1,31 +1,39 @@
 "use client";
-import { BackgroundBeams } from "@/components/ui/background-beams";
 import { TextGenerateEffect } from "@/components/ui/text-generate-effect";
 import { BentoGrid, BentoGridItem } from "@/components/ui/bento-grid";
 import { FloatingNav } from "@/components/ui/floating-navbar";
-import { Spotlight } from "@/components/ui/spotlight";
 import { Button } from "@/components/ui/moving-border";
 import { SmartCBTLogo } from "@/components/smart-cbt-logo";
 import {
   Shield,
   Users,
   Brain,
-  Clock,
   BarChart3,
   Globe,
-  Lock,
   Zap,
   Github,
   BookOpen,
   Download,
   Star,
   GitFork,
-  ExternalLink,
 } from "lucide-react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { GridBackground } from "@/components/ui/grid-background";
 import { motion } from "framer-motion";
+import { GridBackgroundStack } from "@/components/ui/grid-background-stack";
+import { IconBrandNextjs } from "@tabler/icons-react";
+import {
+  siDocker,
+  siGithub,
+  siGoogle,
+  siGooglegemini,
+  siKubernetes,
+  siNextdotjs,
+  siPostgresql,
+  siRedis,
+  siX,
+} from "simple-icons";
 
 const navItems = [
   {
@@ -34,13 +42,13 @@ const navItems = [
     icon: <BookOpen className="h-4 w-4 text-neutral-500 dark:text-white" />,
   },
   {
-    name: "Security",
-    link: "#security",
+    name: "Stack",
+    link: "#stack",
     icon: <Shield className="h-4 w-4 text-neutral-500 dark:text-white" />,
   },
   {
     name: "Documentation",
-    link: "#docs",
+    link: "/docs",
     icon: <BookOpen className="h-4 w-4 text-neutral-500 dark:text-white" />,
   },
   {
@@ -49,6 +57,31 @@ const navItems = [
     icon: <Github className="h-4 w-4 text-neutral-500 dark:text-white" />,
   },
 ];
+
+// Helper to render a simple-icons SVG
+function SimpleIcon({
+  icon,
+  size = 32,
+  className = "",
+}: {
+  icon: any;
+  size?: number;
+  className?: string;
+}) {
+  return (
+    <svg
+      className={className}
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
+      <path d={icon.path} fill="currentColor" />
+    </svg>
+  );
+}
 
 export default function HomePage() {
   const words = "Secure Digital Testing for Millions of Candidates";
@@ -245,32 +278,67 @@ export default function HomePage() {
       </section>
 
       {/* Tech Stack Section */}
-      <section className="py-20 px-4">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-white mb-4">
+      <section id="stack" className="py-20 px-4 relative overflow-hidden">
+        <GridBackgroundStack fade="both" />
+        <div className="max-w-7xl mx-auto relative z-10">
+          <motion.div
+            className="text-center mb-16"
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.6 }}
+            transition={{ duration: 0.7, ease: "easeOut" }}
+          >
+            <h2 className="text-4xl font-bold text-black dark:text-white mb-4">
               Modern Tech Stack
             </h2>
-            <p className="text-xl text-neutral-400 max-w-2xl mx-auto">
+            <p className="text-xl text-black dark:text-neutral-400 max-w-2xl mx-auto">
               Built with cutting-edge technologies for scalability and
               performance
             </p>
-          </div>
+          </motion.div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8">
             {[
-              { name: "Next.js", color: "from-gray-700 to-gray-900" },
-              { name: "PostgreSQL", color: "from-blue-600 to-blue-800" },
-              { name: "Gemini AI", color: "from-purple-600 to-purple-800" },
-              { name: "Redis", color: "from-red-600 to-red-800" },
-              { name: "Docker", color: "from-blue-500 to-blue-700" },
-              { name: "Kubernetes", color: "from-indigo-600 to-indigo-800" },
+              {
+                name: "Next.js",
+                color: "from-gray-700 to-gray-900",
+                icon: siNextdotjs,
+              },
+              {
+                name: "PostgreSQL",
+                color: "from-blue-600 to-blue-800",
+                icon: siPostgresql,
+              },
+              {
+                name: "Gemini AI",
+                color: "from-purple-600 to-purple-800",
+                icon: siGooglegemini,
+              },
+              {
+                name: "Redis",
+                color: "from-red-600 to-red-800",
+                icon: siRedis,
+              },
+              {
+                name: "Docker",
+                color: "from-blue-500 to-blue-700",
+                icon: siDocker,
+              },
+              {
+                name: "Kubernetes",
+                color: "from-indigo-600 to-indigo-800",
+                icon: siKubernetes,
+              },
             ].map((tech, index) => (
               <div key={index} className="text-center group">
                 <div
                   className={`w-16 h-16 bg-gradient-to-br ${tech.color} rounded-lg flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300`}
                 >
-                  <div className="w-8 h-8 bg-white/20 rounded"></div>
+                  <SimpleIcon
+                    icon={tech.icon}
+                    size={32}
+                    className="text-white"
+                  />
                 </div>
                 <p className="text-neutral-300 text-sm">{tech.name}</p>
               </div>
@@ -279,42 +347,10 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-blue-600/20 to-purple-600/20 backdrop-blur-sm">
-        <div className="max-w-4xl mx-auto px-4 text-center">
-          <h2 className="text-4xl font-bold text-white mb-6">
-            Ready to Get Started?
-          </h2>
-          <p className="text-xl text-neutral-300 mb-8 max-w-2xl mx-auto">
-            Join the community building the future of digital testing.
-            Contribute, deploy, or customize Smart CBT for your needs.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button
-              borderRadius="1.75rem"
-              className="bg-white dark:bg-slate-900 text-black dark:text-white border-neutral-200 dark:border-slate-800"
-              as={Link}
-              href="/admin"
-            >
-              Deploy Now
-            </Button>
-            <Button
-              borderRadius="1.75rem"
-              className="bg-transparent text-white border-slate-800"
-              as={Link}
-              href="https://github.com/smartcbt/platform"
-            >
-              <ExternalLink className="w-4 h-4 mr-2" />
-              Documentation
-            </Button>
-          </div>
-        </div>
-      </section>
-
       {/* Footer */}
       <footer className="bg-neutral-950 border-t border-neutral-800 py-12">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="grid md:grid-cols-4 gap-8">
+          <div className="grid md:grid-cols-5 gap-8">
             <div className="md:col-span-2">
               <div className="flex items-center space-x-3 mb-4">
                 <SmartCBTLogo className="w-8 h-8" />
@@ -330,18 +366,24 @@ export default function HomePage() {
                 platform for educational institutions worldwide.
               </p>
               <div className="flex items-center space-x-4 mt-6">
-                <Link
-                  href="https://github.com/smartcbt/platform"
+                <a
+                  href="https://github.com/Daggahh/smart-cbt"
                   className="text-neutral-400 hover:text-white transition-colors"
+                  aria-label="GitHub"
                 >
-                  <Github className="w-5 h-5" />
-                </Link>
-                <Link
-                  href="https://twitter.com/smartcbt"
+                  <SimpleIcon
+                    icon={siGithub}
+                    size={20}
+                    className="text-white"
+                  />
+                </a>
+                <a
+                  href="https://x.com/smartcbt"
                   className="text-neutral-400 hover:text-white transition-colors"
+                  aria-label="X (Twitter)"
                 >
-                  <ExternalLink className="w-5 h-5" />
-                </Link>
+                  <SimpleIcon icon={siX} size={20} className="text-white" />
+                </a>
               </div>
             </div>
 
@@ -349,36 +391,28 @@ export default function HomePage() {
               <h4 className="font-semibold text-white mb-4">Project</h4>
               <ul className="space-y-2 text-sm text-neutral-400">
                 <li>
-                  <Link
-                    href="https://github.com/smartcbt/platform"
+                  <a
+                    href="https://github.com/Daggahh/smart-cbt"
                     className="hover:text-white transition-colors"
                   >
                     GitHub Repository
-                  </Link>
+                  </a>
                 </li>
                 <li>
-                  <Link
+                  <a
                     href="/docs"
                     className="hover:text-white transition-colors"
                   >
                     Documentation
-                  </Link>
+                  </a>
                 </li>
                 <li>
-                  <Link
-                    href="/releases"
+                  <a
+                    href="/status"
                     className="hover:text-white transition-colors"
                   >
-                    Releases
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/roadmap"
-                    className="hover:text-white transition-colors"
-                  >
-                    Roadmap
-                  </Link>
+                    Status
+                  </a>
                 </li>
               </ul>
             </div>
@@ -387,44 +421,58 @@ export default function HomePage() {
               <h4 className="font-semibold text-white mb-4">Community</h4>
               <ul className="space-y-2 text-sm text-neutral-400">
                 <li>
-                  <Link
-                    href="/contributing"
+                  <a
+                    href="https://github.com/Daggahh/smart-cbt/blob/main/CONTRIBUTING.md"
                     className="hover:text-white transition-colors"
                   >
                     Contributing
-                  </Link>
+                  </a>
                 </li>
                 <li>
-                  <Link
-                    href="/discussions"
-                    className="hover:text-white transition-colors"
-                  >
-                    Discussions
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/issues"
+                  <a
+                    href="https://github.com/Daggahh/smart-cbt/issues"
                     className="hover:text-white transition-colors"
                   >
                     Issues
-                  </Link>
+                  </a>
+                </li>
+              </ul>
+            </div>
+
+            <div>
+              <h4 className="font-semibold text-white mb-4">Legal</h4>
+              <ul className="space-y-2 text-sm text-neutral-400">
+                <li>
+                  <a
+                    href="/privacy"
+                    className="hover:text-white transition-colors"
+                  >
+                    Privacy
+                  </a>
                 </li>
                 <li>
-                  <Link
-                    href="/license"
+                  <a
+                    href="/terms"
+                    className="hover:text-white transition-colors"
+                  >
+                    Terms
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://github.com/Daggahh/smart-cbt/blob/main/LICENSE"
                     className="hover:text-white transition-colors"
                   >
                     License
-                  </Link>
+                  </a>
                 </li>
               </ul>
             </div>
           </div>
 
-          <div className="border-t border-neutral-800 mt-8 pt-8 text-center text-sm text-neutral-400">
+          <div className="border-t border-dashed border-neutral-800 mt-8 pt-8 text-center text-sm text-neutral-400">
             <p>
-              &copy; 2024 Smart CBT. Open source under MIT License. Built for
+              &copy; 2025 Smart CBT. Open source under MIT License. Built for
               educational excellence.
             </p>
           </div>
