@@ -25,6 +25,7 @@ import {
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { GridBackground } from "@/components/ui/grid-background";
+import { motion } from "framer-motion";
 
 const navItems = [
   {
@@ -102,21 +103,21 @@ export default function HomePage() {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
               <Button
                 borderRadius="1.75rem"
-                className="bg-white dark:bg-slate-900 text-black dark:text-white border-neutral-200 dark:border-slate-800"
+                className="bg-black dark:bg-white text-white dark:text-black border border-black dark:border-white hover:bg-neutral-800 dark:hover:bg-neutral-200 hover:text-white dark:hover:text-black transition-colors duration-200 shadow-lg"
                 as={Link}
-                href="/admin"
+                href="/auth/login"
               >
                 Get Started
               </Button>
 
               <Button
                 borderRadius="1.75rem"
-                className="bg-transparent text-white border-slate-800"
+                className="bg-white dark:bg-neutral-900 text-black dark:text-white border border-neutral-300 dark:border-neutral-700 hover:bg-neutral-200 dark:hover:bg-neutral-800 hover:text-black dark:hover:text-white transition-colors duration-200 shadow-lg"
                 as={Link}
-                href="https://github.com/smartcbt/platform"
+                href="https://github.com/Daggahh/smart-cbt"
               >
-                <Github className="w-4 h-4 mr-2" />
-                View on GitHub
+                <Github className="w-4 h-4 mr-2 text-black dark:text-white" />
+                <span className="font-semibold">View on GitHub</span>
               </Button>
             </div>
           </div>
@@ -126,123 +127,120 @@ export default function HomePage() {
       {/* Features Section */}
       <section id="features" className="py-20 px-4 relative">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-white mb-4">
+          <motion.div
+            className="text-center mb-16"
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.6 }}
+            transition={{ duration: 0.7, ease: "easeOut" }}
+          >
+            <h2 className="text-4xl font-bold text-black dark:text-white mb-4">
               Enterprise-Grade Features
             </h2>
             <p className="text-xl text-neutral-400 max-w-2xl mx-auto">
               Every feature designed for large-scale, high-integrity digital
               examinations
             </p>
-          </div>
+          </motion.div>
 
           <BentoGrid className="max-w-4xl mx-auto">
             <BentoGridItem
               title="AI-Powered Scoring"
               description="Gemini AI instantly scores MCQs and provides detailed explanatory feedback with natural language processing."
               header={
-                <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-violet-500 via-purple-500 to-blue-500"></div>
+                <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-violet-500 via-purple-500 to-blue-500 items-center justify-center">
+                  <motion.div
+                    whileHover={{ scale: 0.7 }}
+                    whileTap={{ scale: 0.6 }}
+                    className="flex items-center justify-center w-10 h-10"
+                  >
+                    <Brain className="h-5 w-5 text-black dark:text-white" />
+                  </motion.div>
+                </div>
               }
-              icon={<Brain className="h-4 w-4 text-neutral-500" />}
+              icon={null}
             />
             <BentoGridItem
               title="Anti-Cheating System"
               description="Advanced security measures including randomized questions, activity monitoring, and behavior analysis."
               header={
-                <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-green-500 via-emerald-500 to-teal-500"></div>
+                <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-green-500 via-emerald-500 to-teal-500 items-center justify-center">
+                  <motion.div
+                    whileHover={{ scale: 0.7 }}
+                    whileTap={{ scale: 0.6 }}
+                    className="flex items-center justify-center w-10 h-10"
+                  >
+                    <Shield className="h-5 w-5 text-black dark:text-white" />
+                  </motion.div>
+                </div>
               }
-              icon={<Shield className="h-4 w-4 text-neutral-500" />}
+              icon={null}
             />
             <BentoGridItem
               title="Batch Management"
               description="Organize millions of candidates into manageable examination batches with regional distribution."
               header={
-                <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-orange-500 via-red-500 to-pink-500"></div>
+                <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-orange-500 via-red-500 to-pink-500 items-center justify-center">
+                  <motion.div
+                    whileHover={{ scale: 0.7 }}
+                    whileTap={{ scale: 0.6 }}
+                    className="flex items-center justify-center w-10 h-10"
+                  >
+                    <Users className="h-5 w-5 text-black dark:text-white" />
+                  </motion.div>
+                </div>
               }
-              icon={<Users className="h-4 w-4 text-neutral-500" />}
+              icon={null}
             />
             <BentoGridItem
               title="Offline Capability"
               description="Reliable testing with local exam caching, auto-resume sessions, and sync capabilities."
               header={
-                <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-cyan-500 via-blue-500 to-indigo-500"></div>
+                <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-cyan-500 via-blue-500 to-indigo-500 items-center justify-center">
+                  <motion.div
+                    whileHover={{ scale: 0.7 }}
+                    whileTap={{ scale: 0.6 }}
+                    className="flex items-center justify-center w-10 h-10"
+                  >
+                    <Globe className="h-5 w-5 text-black dark:text-white" />
+                  </motion.div>
+                </div>
               }
-              icon={<Globe className="h-4 w-4 text-neutral-500" />}
+              icon={null}
             />
             <BentoGridItem
               title="Real-time Analytics"
               description="Comprehensive insights with performance metrics, system health monitoring, and custom reports."
               header={
-                <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-yellow-500 via-orange-500 to-red-500"></div>
+                <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-yellow-500 via-orange-500 to-red-500 items-center justify-center">
+                  <motion.div
+                    whileHover={{ scale: 0.7 }}
+                    whileTap={{ scale: 0.6 }}
+                    className="flex items-center justify-center w-10 h-10"
+                  >
+                    <BarChart3 className="h-5 w-5 text-black dark:text-white" />
+                  </motion.div>
+                </div>
               }
-              icon={<BarChart3 className="h-4 w-4 text-neutral-500" />}
+              icon={null}
             />
             <BentoGridItem
               title="Content Management"
               description="Flexible question bank management with AI-assisted formatting and bulk import capabilities."
               header={
-                <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-purple-500 via-violet-500 to-indigo-500"></div>
+                <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-purple-500 via-violet-500 to-indigo-500 items-center justify-center">
+                  <motion.div
+                    whileHover={{ scale: 0.7 }}
+                    whileTap={{ scale: 0.6 }}
+                    className="flex items-center justify-center w-10 h-10"
+                  >
+                    <Zap className="h-5 w-5 text-black dark:text-white" />
+                  </motion.div>
+                </div>
               }
-              icon={<Zap className="h-4 w-4 text-neutral-500" />}
+              icon={null}
             />
           </BentoGrid>
-        </div>
-      </section>
-
-      {/* Security Section */}
-      <section
-        id="security"
-        className="py-20 bg-neutral-900/50 backdrop-blur-sm"
-      >
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-white mb-4">
-              Enterprise Security
-            </h2>
-            <p className="text-xl text-neutral-400 max-w-2xl mx-auto">
-              Built with security-first principles for high-stakes examinations
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="text-center group">
-              <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
-                <Lock className="w-8 h-8 text-white" />
-              </div>
-              <h3 className="text-xl font-semibold mb-4 text-white">
-                End-to-End Encryption
-              </h3>
-              <p className="text-neutral-400">
-                All data encrypted in transit and at rest using
-                industry-standard protocols
-              </p>
-            </div>
-
-            <div className="text-center group">
-              <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
-                <Shield className="w-8 h-8 text-white" />
-              </div>
-              <h3 className="text-xl font-semibold mb-4 text-white">
-                Multi-Factor Authentication
-              </h3>
-              <p className="text-neutral-400">
-                Secure access control with biometric and token-based
-                authentication
-              </p>
-            </div>
-
-            <div className="text-center group">
-              <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-violet-500 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
-                <Clock className="w-8 h-8 text-white" />
-              </div>
-              <h3 className="text-xl font-semibold mb-4 text-white">
-                Audit Logging
-              </h3>
-              <p className="text-neutral-400">
-                Comprehensive activity logs with tamper-proof audit trails
-              </p>
-            </div>
-          </div>
         </div>
       </section>
 
