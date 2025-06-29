@@ -35,9 +35,9 @@ export const FloatingNav = ({
           <NavbarLogo />
           <NavItems items={navItems} />
           <div className="flex items-center gap-2 z-30 relative">
-          <ThemeToggle />
+            <ThemeToggle />
             <a
-              href="/auth/login"
+              href="/auth/student/login"
               className="border text-sm font-medium relative border-neutral-200 dark:border-white/[0.2] text-black dark:text-white px-4 py-2 rounded-full"
             >
               <span>Login</span>
@@ -75,7 +75,7 @@ export const FloatingNav = ({
             ))}
             <div className="flex w-full flex-col gap-4">
               <a
-                href="/auth/login"
+                href="/auth/student/login"
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="border text-sm font-medium relative border-neutral-200 dark:border-white/[0.2] text-black dark:text-white px-4 py-2 rounded-full w-full text-center"
               >
