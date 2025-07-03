@@ -18,17 +18,17 @@ INSERT INTO subjects (id, name, code, description) VALUES
 (uuid_generate_v4(), 'Government', 'GOV', 'Nigerian government and political science'),
 (uuid_generate_v4(), 'Literature in English', 'LIT', 'English literature and literary analysis');
 
--- Insert sample admin users
+-- Insert sample admin and super_admin users
 INSERT INTO users (id, email, password_hash, first_name, last_name, role, phone, registration_number) VALUES
-(uuid_generate_v4(), 'admin@smartcbt.com', '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj/VcSAg9S6O', 'System', 'Administrator', 'super_admin', '+234-800-123-4567', 'ADM001'),
-(uuid_generate_v4(), 'jamb.admin@smartcbt.com', '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj/VcSAg9S6O', 'JAMB', 'Administrator', 'admin', '+234-800-123-4568', 'JAMB001'),
-(uuid_generate_v4(), 'waec.admin@smartcbt.com', '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj/VcSAg9S6O', 'WAEC', 'Administrator', 'admin', '+234-800-123-4569', 'WAEC001');
+(uuid_generate_v4(), 'odidihope@gmail.com', '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj/VcSAg9S6O', 'Hope', 'Odidi', 'super_admin', '+234-800-123-4567', 'ADM001'),
+(uuid_generate_v4(), 'razzahhhh@gmail.com', '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj/VcSAg9S6O', 'Razz', 'Admin', 'admin', '+234-800-123-4568', 'ADM002'),
+(uuid_generate_v4(), 'fake.admin@example.com', '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj/VcSAg9S6O', 'Fake', 'Admin', 'admin', '+234-800-000-0000', 'ADM003');
 
 -- Insert sample student users
 INSERT INTO users (id, email, password_hash, first_name, last_name, role, phone, date_of_birth, registration_number) VALUES
-(uuid_generate_v4(), 'john.doe@student.com', '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj/VcSAg9S6O', 'John', 'Doe', 'student', '+234-801-234-5678', '2005-03-15', 'STU001'),
-(uuid_generate_v4(), 'jane.smith@student.com', '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj/VcSAg9S6O', 'Jane', 'Smith', 'student', '+234-802-345-6789', '2004-07-22', 'STU002'),
-(uuid_generate_v4(), 'mike.johnson@student.com', '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj/VcSAg9S6O', 'Mike', 'Johnson', 'student', '+234-803-456-7890', '2005-11-08', 'STU003');
+(uuid_generate_v4(), 'hopeodidi@gmail.com', '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj/VcSAg9S6O', 'Hope', 'Odidi', 'student', '+234-801-234-5678', '2005-03-15', 'STU001'),
+(uuid_generate_v4(), 'daggerminotaur@gmail.com', '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj/VcSAg9S6O', 'Dagger', 'Minotaur', 'student', '+234-802-345-6789', '2004-07-22', 'STU002'),
+(uuid_generate_v4(), 'fake.student@example.com', '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj/VcSAg9S6O', 'Fake', 'Student', 'student', '+234-803-456-7890', '2005-11-08', 'STU003');
 
 -- Get IDs for foreign key references
 DO $$

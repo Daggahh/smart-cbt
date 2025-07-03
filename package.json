@@ -6,7 +6,12 @@
     "build": "next build",
     "dev": "next dev",
     "lint": "next lint",
-    "start": "next start"
+    "start": "next start",
+    "db:drop": "dropdb -U postgres smartcbt",
+    "db:create": "createdb -U postgres smartcbt",
+    "db:schema": "psql -U postgres -d smartcbt -f scripts/database-schema.sql",
+    "db:seed": "psql -U postgres -d smartcbt -f scripts/seed-data.sql",
+    "db:reset": "npm run db:drop && npm run db:create && npm run db:schema && npm run db:seed"
   },
   "dependencies": {
     "@emotion/is-prop-valid": "latest",
@@ -74,6 +79,7 @@
     "@types/node": "^22",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "dotenv-cli": "^8.0.0",
     "postcss": "^8.5",
     "tailwindcss": "^3.4.17",
     "typescript": "^5"
