@@ -21,33 +21,35 @@ export async function POST(request: NextRequest) {
     const client = await pool.connect();
 
     try {
-      // TODO: Validate verification token from database
-      // For now, we'll use a simple approach
-      // In a real implementation, you'd check against a verification_tokens table
-
-      // Check if token exists and is not expired
-      // This is a placeholder - you'll need to implement proper token validation
-      const tokenValid = true; // Replace with actual token validation
-
-      if (!tokenValid) {
+      // Validate token from DB
+      const tokenResult = await client.query(
+        `SELECT user_id, expires_at, used FROM verification_tokens WHERE token = $1`,
+        [token]
+      );
+      if (tokenResult.rows.length === 0) {
+        return NextResponse.json(
+          { error: "Invalid or expired verification token" },
+          { status: 400 }
+        );
+      }
+      const { user_id, expires_at, used } = tokenResult.rows[0];
+      if (used || new Date() > new Date(expires_at)) {
         return NextResponse.json(
           { error: "Invalid or expired verification token" },
           { status: 400 }
         );
       }
 
-      // TODO: Get user ID from token
-      // For now, we'll use a placeholder
-      const userId = "placeholder-user-id"; // Replace with actual user ID from token
-
       // Update user email verification status
       await client.query(
         "UPDATE users SET email_verified = true, updated_at = CURRENT_TIMESTAMP WHERE id = $1",
-        [userId]
+        [user_id]
       );
-
-      // TODO: Clear the verification token
-      // Delete from verification_tokens table or similar
+      // Mark token as used
+      await client.query(
+        "UPDATE verification_tokens SET used = true WHERE token = $1",
+        [token]
+      );
 
       return NextResponse.json(
         { message: "Email verified successfully" },

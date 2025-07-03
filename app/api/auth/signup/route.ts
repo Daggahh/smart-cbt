@@ -1,6 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { Pool } from "pg";
+import { sendEmail } from "@/lib/email";
 
 // Database connection
 const pool = new Pool({
@@ -81,6 +82,7 @@ export async function POST(request: NextRequest) {
 
       // Generate verification token
       const verificationToken = crypto.randomUUID();
+      const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
 
       // Insert new user
       const result = await client.query(
@@ -110,12 +112,21 @@ export async function POST(request: NextRequest) {
 
       const userId = result.rows[0].id;
 
-      // TODO: Send verification email with token
-      // For now, we'll just log the token
-      console.log(`Verification token for ${email}: ${verificationToken}`);
+      // Store verification token
+      await client.query(
+        `INSERT INTO verification_tokens (user_id, token, expires_at) VALUES ($1, $2, $3)`,
+        [userId, verificationToken, expiresAt]
+      );
 
-      // Store verification token (you might want to create a separate table for this)
-      // For now, we'll use a simple approach
+      // Send verification email
+      const verifyUrl = `${
+        process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
+      }/auth/student/verify-email?token=${verificationToken}`;
+      await sendEmail({
+        to: email,
+        subject: "Verify your Smart CBT account",
+        html: `<p>Hello ${firstName},</p><p>Thank you for signing up. Please verify your email by clicking the link below:</p><p><a href="${verifyUrl}">Verify Email</a></p><p>If you did not sign up, you can ignore this email.</p>`,
+      });
 
       return NextResponse.json(
         {

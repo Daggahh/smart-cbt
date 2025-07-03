@@ -30,24 +30,24 @@ export async function POST(request: NextRequest) {
     const client = await pool.connect();
 
     try {
-      // TODO: Validate reset token from database
-      // For now, we'll use a simple approach
-      // In a real implementation, you'd check against a password_reset_tokens table
-
-      // Check if token exists and is not expired
-      // This is a placeholder - you'll need to implement proper token validation
-      const tokenValid = true; // Replace with actual token validation
-
-      if (!tokenValid) {
+      // Validate token from DB
+      const tokenResult = await client.query(
+        `SELECT user_id, expires_at, used FROM password_reset_tokens WHERE token = $1`,
+        [token]
+      );
+      if (tokenResult.rows.length === 0) {
         return NextResponse.json(
           { error: "Invalid or expired reset token" },
           { status: 400 }
         );
       }
-
-      // TODO: Get user ID from token
-      // For now, we'll use a placeholder
-      const userId = "placeholder-user-id"; // Replace with actual user ID from token
+      const { user_id, expires_at, used } = tokenResult.rows[0];
+      if (used || new Date() > new Date(expires_at)) {
+        return NextResponse.json(
+          { error: "Invalid or expired reset token" },
+          { status: 400 }
+        );
+      }
 
       // Hash new password
       const saltRounds = 12;
@@ -56,11 +56,13 @@ export async function POST(request: NextRequest) {
       // Update user password
       await client.query(
         "UPDATE users SET password_hash = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2",
-        [passwordHash, userId]
+        [passwordHash, user_id]
       );
-
-      // TODO: Clear the reset token
-      // Delete from password_reset_tokens table or similar
+      // Mark token as used
+      await client.query(
+        "UPDATE password_reset_tokens SET used = true WHERE token = $1",
+        [token]
+      );
 
       return NextResponse.json(
         { message: "Password reset successfully" },

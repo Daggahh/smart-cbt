@@ -25,8 +25,8 @@ export default function StudentAuthLayout({
 
       {/* Back to Home Button */}
       <motion.div
-        className="absolute top-6 right-6 z-50"
-        initial={{ opacity: 0, x: 20 }}
+        className="absolute top-6 left-6 z-50"
+        initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.5 }}
       >

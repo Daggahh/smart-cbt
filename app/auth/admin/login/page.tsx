@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import { authAPI } from "@/lib/api";
 
 export default function AdminLoginPage() {
   const [email, setEmail] = useState("");
@@ -15,16 +16,11 @@ export default function AdminLoginPage() {
     e.preventDefault();
     setLoading(true);
     setError("");
-    const res = await fetch("/api/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password, role: "admin" }),
-    });
-    if (res.ok) {
+    const response = await authAPI.login({ email, password, role: "admin" });
+    if (response.success) {
       router.push("/admin");
     } else {
-      const data = await res.json();
-      setError(data.message || "Login failed");
+      setError(response.error || "Login failed");
     }
     setLoading(false);
   }

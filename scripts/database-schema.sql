@@ -264,6 +264,26 @@ CREATE TABLE file_uploads (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Verification tokens table (for email verification)
+CREATE TABLE verification_tokens (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+    token VARCHAR(255) UNIQUE NOT NULL,
+    expires_at TIMESTAMP WITH TIME ZONE NOT NULL,
+    used BOOLEAN DEFAULT false,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Password reset tokens table
+CREATE TABLE password_reset_tokens (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+    token VARCHAR(255) UNIQUE NOT NULL,
+    expires_at TIMESTAMP WITH TIME ZONE NOT NULL,
+    used BOOLEAN DEFAULT false,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Create indexes for better performance
 CREATE INDEX idx_users_email ON users(email);
 CREATE INDEX idx_users_registration_number ON users(registration_number);

@@ -1,5 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { Pool } from "pg";
+import { sendEmail } from "@/lib/email";
 
 // Database connection
 const pool = new Pool({
@@ -49,16 +50,21 @@ export async function POST(request: NextRequest) {
       const resetToken = crypto.randomUUID();
       const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour from now
 
-      // Store reset token (you might want to create a separate table for this)
-      // For now, we'll use a simple approach with a temporary table or update user record
+      // Store reset token
+      await client.query(
+        `INSERT INTO password_reset_tokens (user_id, token, expires_at) VALUES ($1, $2, $3)`,
+        [user.id, resetToken, expiresAt]
+      );
 
-      // TODO: Create a password_reset_tokens table or use a similar approach
-      // For now, we'll just log the token
-      console.log(`Password reset token for ${email}: ${resetToken}`);
-      console.log(`Token expires at: ${expiresAt}`);
-
-      // TODO: Send reset email with token
-      // The email should contain a link like: /auth/student/reset-password?token=${resetToken}
+      // Send reset email
+      const resetUrl = `${
+        process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
+      }/auth/student/reset-password?token=${resetToken}`;
+      await sendEmail({
+        to: email,
+        subject: "Reset your Smart CBT password",
+        html: `<p>Hello ${user.first_name},</p><p>You requested a password reset. Click the link below to reset your password:</p><p><a href="${resetUrl}">Reset Password</a></p><p>If you did not request this, you can ignore this email.</p>`,
+      });
 
       return NextResponse.json(
         {
