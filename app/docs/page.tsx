@@ -3,10 +3,8 @@ import { BackgroundBeams } from "@/components/ui/background-beams";
 import { TextGenerateEffect } from "@/components/ui/text-generate-effect";
 import { BentoGrid, BentoGridItem } from "@/components/ui/bento-grid";
 import { FloatingNav } from "@/components/ui/floating-navbar";
-import { Spotlight } from "@/components/ui/spotlight";
 import { Button } from "@/components/ui/moving-border";
 import { Badge } from "@/components/ui/badge";
-import { SmartCBTLogo } from "@/components/smart-cbt-logo";
 import {
   BookOpen,
   Code,
@@ -24,6 +22,7 @@ import {
   Rocket,
 } from "lucide-react";
 import Link from "next/link";
+import { GridBackground } from "@/components/ui/grid-background";
 
 const navItems = [
   {
@@ -56,58 +55,48 @@ export default function DocsPage() {
       step: 1,
       title: "Clone Repository",
       description: "Get the Smart CBT source code",
-      code: "git clone https://github.com/smartcbt/platform.git",
+      code: "git clone https://github.com/Daggahh/smart-cbt.git",
       icon: <Github className="w-6 h-6" />,
     },
     {
       step: 2,
       title: "Install Dependencies",
       description: "Install required packages",
-      code: "npm install && npm run setup",
+      code: "pnpm install",
       icon: <Terminal className="w-6 h-6" />,
     },
     {
       step: 3,
       title: "Setup Database",
-      description: "Configure PostgreSQL database",
-      code: "npm run db:setup && npm run db:seed",
+      description: "Configure PostgreSQL and seed the database",
+      code: "pnpm run db:setup && pnpm run db:seed",
       icon: <Database className="w-6 h-6" />,
     },
     {
       step: 4,
       title: "Start Development",
       description: "Run the development server",
-      code: "npm run dev",
+      code: "pnpm dev",
       icon: <Rocket className="w-6 h-6" />,
     },
   ];
 
   return (
-    <div className="min-h-screen bg-black/[0.96] antialiased bg-grid-white/[0.02] relative overflow-hidden">
+    <div className="min-h-screen bg-background antialiased relative overflow-hidden">
       <FloatingNav navItems={navItems} />
 
       {/* Hero Section */}
-      <div className="h-screen w-full rounded-md bg-neutral-950 relative flex flex-col items-center justify-center antialiased">
-        <div className="absolute inset-0 w-full h-full bg-neutral-950 [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]"></div>
-        <Spotlight
-          className="-top-40 left-0 md:left-60 md:-top-20"
-          fill="white"
-        />
+      <div
+        className="pt-24 w-full rounded-md relative flex flex-col items-center justify-center antialiased"
+        style={{ minHeight: "calc(100vh - 4rem)" }}
+      >
+        <GridBackground />
         <BackgroundBeams />
-
         <div className="max-w-7xl mx-auto relative z-10 w-full pt-20 md:pt-0 px-4">
           <div className="text-center">
-            <div className="flex items-center justify-center space-x-4 mb-8">
-              <SmartCBTLogo className="w-16 h-16" />
-              <div>
-                <h1 className="text-4xl md:text-6xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 bg-opacity-50">
-                  Documentation
-                </h1>
-                <p className="text-neutral-500 max-w-lg mx-auto my-2 text-sm text-center relative z-10">
-                  Smart CBT Platform Guide
-                </p>
-              </div>
-            </div>
+            <Badge variant="secondary" className="mb-2">
+              Documentation
+            </Badge>
 
             <TextGenerateEffect
               words={words}
@@ -118,26 +107,23 @@ export default function DocsPage() {
               Everything you need to deploy, customize, and scale Smart CBT for
               your organization. From quick setup to advanced configurations.
             </p>
-
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8 mb-16">
               <Button
                 borderRadius="1.75rem"
-                className="bg-white dark:bg-slate-900 text-black dark:text-white border-neutral-200 dark:border-slate-800"
+                className="bg-black dark:bg-white text-white dark:text-black border border-black dark:border-white hover:bg-neutral-800 dark:hover:bg-neutral-200 hover:text-white dark:hover:text-black transition-colors duration-200 shadow-lg"
                 as={Link}
                 href="#quick-start"
               >
-                <Play className="w-4 h-4 mr-2" />
                 Quick Start
               </Button>
-
               <Button
                 borderRadius="1.75rem"
-                className="bg-transparent text-white border-slate-800"
+                className="bg-white dark:bg-neutral-900 text-black dark:text-white border border-neutral-300 dark:border-neutral-700 hover:bg-neutral-200 dark:hover:bg-neutral-800 hover:text-black dark:hover:text-white transition-colors duration-200 shadow-lg"
                 as={Link}
-                href="https://github.com/smartcbt/platform"
+                href="https://github.com/Daggahh/smart-cbt"
               >
-                <Github className="w-4 h-4 mr-2" />
-                View Source
+                <Github className="w-4 h-4 mr-2 text-black dark:text-white" />
+                <span className="font-semibold">View on GitHub</span>
               </Button>
             </div>
           </div>
@@ -148,14 +134,13 @@ export default function DocsPage() {
       <section id="quick-start" className="py-20 px-4 relative">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-white mb-4">
+            <h2 className="text-4xl font-bold text-black dark:text-white mb-4">
               Quick Start Guide
             </h2>
             <p className="text-xl text-neutral-400 max-w-2xl mx-auto">
               Get Smart CBT running in your environment within minutes
             </p>
           </div>
-
           <BentoGrid className="max-w-6xl mx-auto">
             {quickStartSteps.map((step, index) => (
               <BentoGridItem
@@ -164,7 +149,9 @@ export default function DocsPage() {
                 description={step.description}
                 header={
                   <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-violet-500 via-purple-500 to-blue-500 items-center justify-center">
-                    <div className="text-white">{step.icon}</div>
+                    <div className="flex items-center justify-center w-10 h-10 text-white">
+                      {step.icon}
+                    </div>
                   </div>
                 }
                 icon={
@@ -172,7 +159,11 @@ export default function DocsPage() {
                     {step.code}
                   </div>
                 }
-                className={index === 0 || index === 3 ? "md:col-span-2" : ""}
+                className={
+                  index === 0 || index === quickStartSteps.length - 1
+                    ? "md:col-span-2"
+                    : ""
+                }
               />
             ))}
           </BentoGrid>
@@ -180,68 +171,88 @@ export default function DocsPage() {
       </section>
 
       {/* Features Documentation */}
-      <section
-        id="features"
-        className="py-20 bg-neutral-900/50 backdrop-blur-sm"
-      >
-        <div className="max-w-7xl mx-auto px-4">
+      <section id="features" className="py-20 px-4 relative">
+        <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-white mb-4">
+            <h2 className="text-4xl font-bold text-black dark:text-white mb-4">
               Feature Documentation
             </h2>
             <p className="text-xl text-neutral-400 max-w-2xl mx-auto">
               Comprehensive guides for every Smart CBT feature
             </p>
           </div>
-
           <BentoGrid className="max-w-4xl mx-auto">
             <BentoGridItem
               title="Student Portal"
               description="Dashboard, exam interface, results, and performance tracking"
               header={
-                <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-blue-500 via-cyan-500 to-teal-500"></div>
+                <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-blue-500 via-cyan-500 to-teal-500 items-center justify-center">
+                  <div className="flex items-center justify-center w-10 h-10">
+                    <Users className="h-5 w-5 text-black dark:text-white" />
+                  </div>
+                </div>
               }
-              icon={<Users className="h-4 w-4 text-neutral-500" />}
+              icon={null}
             />
             <BentoGridItem
               title="Admin Management"
               description="Exam creation, batch management, monitoring, and analytics"
               header={
-                <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-green-500 via-emerald-500 to-teal-500"></div>
+                <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-green-500 via-emerald-500 to-teal-500 items-center justify-center">
+                  <div className="flex items-center justify-center w-10 h-10">
+                    <Shield className="h-5 w-5 text-black dark:text-white" />
+                  </div>
+                </div>
               }
-              icon={<Shield className="h-4 w-4 text-neutral-500" />}
+              icon={null}
             />
             <BentoGridItem
               title="AI Integration"
               description="Gemini AI scoring, feedback generation, and content processing"
               header={
-                <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-purple-500 via-violet-500 to-indigo-500"></div>
+                <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-purple-500 via-violet-500 to-indigo-500 items-center justify-center">
+                  <div className="flex items-center justify-center w-10 h-10">
+                    <Brain className="h-5 w-5 text-black dark:text-white" />
+                  </div>
+                </div>
               }
-              icon={<Brain className="h-4 w-4 text-neutral-500" />}
+              icon={null}
             />
             <BentoGridItem
               title="Security & Anti-Cheating"
               description="Advanced security measures, monitoring, and fraud detection"
               header={
-                <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-red-500 via-pink-500 to-rose-500"></div>
+                <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-red-500 via-pink-500 to-rose-500 items-center justify-center">
+                  <div className="flex items-center justify-center w-10 h-10">
+                    <Lock className="h-5 w-5 text-black dark:text-white" />
+                  </div>
+                </div>
               }
-              icon={<Lock className="h-4 w-4 text-neutral-500" />}
+              icon={null}
             />
             <BentoGridItem
               title="API Reference"
               description="Complete REST API documentation with examples"
               header={
-                <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-orange-500 via-amber-500 to-yellow-500"></div>
+                <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-orange-500 via-amber-500 to-yellow-500 items-center justify-center">
+                  <div className="flex items-center justify-center w-10 h-10">
+                    <Code className="h-5 w-5 text-black dark:text-white" />
+                  </div>
+                </div>
               }
-              icon={<Code className="h-4 w-4 text-neutral-500" />}
+              icon={null}
             />
             <BentoGridItem
               title="Deployment Guide"
               description="Docker, Kubernetes, and production deployment strategies"
               header={
-                <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-cyan-500 via-blue-500 to-indigo-500"></div>
+                <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-cyan-500 via-blue-500 to-indigo-500 items-center justify-center">
+                  <div className="flex items-center justify-center w-10 h-10">
+                    <Globe className="h-5 w-5 text-black dark:text-white" />
+                  </div>
+                </div>
               }
-              icon={<Globe className="h-4 w-4 text-neutral-500" />}
+              icon={null}
             />
           </BentoGrid>
         </div>
@@ -251,10 +262,10 @@ export default function DocsPage() {
       <section id="api" className="py-20 px-4">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-white mb-4">
+            <h2 className="text-4xl font-bold text-black dark:text-white mb-4">
               API Documentation
             </h2>
-            <p className="text-xl text-neutral-400 max-w-2xl mx-auto">
+            <p className="text-xl text-neutral-500 dark:text-neutral-400 max-w-2xl mx-auto">
               RESTful APIs for integration and custom development
             </p>
           </div>
@@ -300,26 +311,36 @@ export default function DocsPage() {
             ].map((api, index) => (
               <div
                 key={index}
-                className="group relative bg-neutral-900 border border-neutral-800 rounded-xl p-6 hover:border-neutral-700 transition-colors"
+                className="group relative bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl p-6 hover:border-neutral-400 dark:hover:border-neutral-700 transition-colors shadow-sm"
               >
                 <div className="flex items-center space-x-3 mb-4">
-                  <Code className="w-6 h-6 text-blue-400" />
-                  <h3 className="text-xl font-semibold text-white">
+                  <Code className="w-6 h-6 text-blue-500 dark:text-blue-400" />
+                  <h3 className="text-xl font-semibold text-black dark:text-white">
                     {api.title}
                   </h3>
                 </div>
-                <p className="text-neutral-400 mb-4">{api.description}</p>
+                <p className="text-neutral-700 dark:text-neutral-300 mb-4">
+                  {api.description}
+                </p>
                 <div className="space-y-2">
                   <div className="text-sm">
-                    <span className="text-neutral-500">Endpoint:</span>
-                    <code className="ml-2 text-green-400 bg-neutral-800 px-2 py-1 rounded">
+                    <span className="text-neutral-500 dark:text-neutral-400">
+                      Endpoint:
+                    </span>
+                    <code className="ml-2 text-green-600 dark:text-green-400 bg-neutral-100 dark:bg-neutral-800 px-2 py-1 rounded">
                       {api.endpoint}
                     </code>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <span className="text-neutral-500 text-sm">Methods:</span>
+                    <span className="text-neutral-500 dark:text-neutral-400 text-sm">
+                      Methods:
+                    </span>
                     {api.methods.map((method) => (
-                      <Badge key={method} variant="outline" className="text-xs">
+                      <Badge
+                        key={method}
+                        variant="outline"
+                        className="text-xs text-black dark:text-white border-neutral-300 dark:border-neutral-700"
+                      >
                         {method}
                       </Badge>
                     ))}
@@ -335,10 +356,10 @@ export default function DocsPage() {
       <section className="py-20 bg-neutral-900/50 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-white mb-4">
+            <h2 className="text-4xl font-bold text-black dark:text-white mb-4">
               Technology Stack
             </h2>
-            <p className="text-xl text-neutral-400 max-w-2xl mx-auto">
+            <p className="text-xl text-neutral-500 dark:text-neutral-400 max-w-2xl mx-auto">
               Modern, scalable technologies powering Smart CBT
             </p>
           </div>
@@ -369,16 +390,18 @@ export default function DocsPage() {
             ].map((stack, index) => (
               <div
                 key={index}
-                className="bg-neutral-900 border border-neutral-800 rounded-xl p-6 hover:border-neutral-700 transition-colors"
+                className="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl p-6 hover:border-neutral-400 dark:hover:border-neutral-700 transition-colors shadow-sm"
               >
-                <h3 className="text-xl font-semibold text-white mb-4">
+                <h3 className="text-xl font-semibold text-black dark:text-white mb-4">
                   {stack.category}
                 </h3>
                 <div className="space-y-2">
                   {stack.techs.map((tech) => (
                     <div key={tech} className="flex items-center space-x-2">
-                      <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
-                      <span className="text-neutral-300">{tech}</span>
+                      <div className="w-2 h-2 bg-blue-500 dark:bg-blue-400 rounded-full"></div>
+                      <span className="text-neutral-700 dark:text-neutral-300">
+                        {tech}
+                      </span>
                     </div>
                   ))}
                 </div>
