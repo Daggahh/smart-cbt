@@ -9,6 +9,7 @@ import Link from "next/link";
 import { authAPI } from "@/lib/api";
 import { ChevronRight } from "lucide-react";
 import { signIn } from "next-auth/react";
+import { toast } from "sonner";
 
 type FormType =
   | "login"
@@ -73,6 +74,7 @@ export default function StudentAuthForm({ formType }: StudentAuthFormProps) {
 
     if (!validateForm()) {
       setLoading(false);
+      if (error) toast.error(error);
       return;
     }
 
@@ -80,18 +82,13 @@ export default function StudentAuthForm({ formType }: StudentAuthFormProps) {
       let response;
       switch (formType) {
         case "login":
-          const loginResult = await signIn("credentials", {
+          await signIn("credentials", {
             email: formData.email,
             password: formData.password,
-            redirect: false,
+            redirect: true,
+            callbackUrl: "/student",
           });
-          if (loginResult && !loginResult.error) {
-            router.push("/student");
-          } else {
-            setError("Invalid email or password");
-          }
           break;
-
         case "signup":
           const { confirmPassword, ...signupData } = formData;
           response = await authAPI.signup(signupData);
@@ -104,9 +101,9 @@ export default function StudentAuthForm({ formType }: StudentAuthFormProps) {
             }, 3000);
           } else {
             setError(response.error || "Signup failed");
+            toast.error(response.error || "Signup failed");
           }
           break;
-
         case "forgot-password":
           response = await authAPI.forgotPassword({ email: formData.email });
           if (response.success) {
@@ -116,13 +113,14 @@ export default function StudentAuthForm({ formType }: StudentAuthFormProps) {
             setFormData({ ...formData, email: "" });
           } else {
             setError(response.error || "Failed to send reset email");
+            toast.error(response.error || "Failed to send reset email");
           }
           break;
-
         case "reset-password":
           const token = searchParams.get("token");
           if (!token) {
             setError("Invalid or missing reset token");
+            toast.error("Invalid or missing reset token");
             break;
           }
           response = await authAPI.resetPassword({
@@ -136,13 +134,14 @@ export default function StudentAuthForm({ formType }: StudentAuthFormProps) {
             }, 2000);
           } else {
             setError(response.error || "Failed to reset password");
+            toast.error(response.error || "Failed to reset password");
           }
           break;
-
         case "verify-email":
           const verifyToken = searchParams.get("token");
           if (!verifyToken) {
             setError("Invalid or missing verification token");
+            toast.error("Invalid or missing verification token");
             break;
           }
           response = await authAPI.verifyEmail({ token: verifyToken });
@@ -152,11 +151,13 @@ export default function StudentAuthForm({ formType }: StudentAuthFormProps) {
             );
           } else {
             setError(response.error || "Failed to verify email");
+            toast.error(response.error || "Failed to verify email");
           }
           break;
       }
     } catch (error) {
       setError("An error occurred. Please try again.");
+      toast.error("An error occurred. Please try again.");
     }
 
     setLoading(false);
@@ -528,16 +529,6 @@ export default function StudentAuthForm({ formType }: StudentAuthFormProps) {
 
       <form className="my-8" onSubmit={handleSubmit}>
         {renderFormFields()}
-
-        {error && (
-          <div className="mb-4 text-red-500 text-sm text-center">{error}</div>
-        )}
-
-        {success && (
-          <div className="mb-4 text-green-500 text-sm text-center">
-            {success}
-          </div>
-        )}
 
         <button
           className="group/btn relative h-10 w-full rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"

@@ -1,4 +1,28 @@
 -- Smart CBT Seed Data
+-- Truncate all relevant tables for a clean reseed (dev only!)
+TRUNCATE TABLE 
+  exam_registrations,
+  exam_batches,
+  exam_results,
+  exam_sessions,
+  student_answers,
+  questions,
+  question_options,
+  question_banks,
+  exams,
+  users,
+  institutions,
+  subjects,
+  security_logs,
+  audit_logs,
+  email_notifications,
+  file_uploads,
+  password_reset_tokens,
+  verification_tokens,
+  system_monitoring
+RESTART IDENTITY CASCADE;
+
+-- Smart CBT Seed Data
 -- Insert sample data for testing and development
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
@@ -20,16 +44,18 @@ INSERT INTO subjects (id, name, code, description) VALUES
 (uuid_generate_v4(), 'Literature in English', 'LIT', 'English literature and literary analysis');
 
 -- Insert sample admin and super_admin users
-INSERT INTO users (id, email, password_hash, first_name, last_name, role, phone, registration_number) VALUES
-(uuid_generate_v4(), 'odidihope@gmail.com', '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj/VcSAg9S6O', 'Hope', 'Odidi', 'super_admin', '+234-800-123-4567', 'ADM001'),
-(uuid_generate_v4(), 'razzahhhh@gmail.com', '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj/VcSAg9S6O', 'Razz', 'Admin', 'admin', '+234-800-123-4568', 'ADM002'),
-(uuid_generate_v4(), 'fake.admin@example.com', '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj/VcSAg9S6O', 'Fake', 'Admin', 'admin', '+234-800-000-0000', 'ADM003');
+-- Password for all users is 'password123'
+INSERT INTO users (id, email, password_hash, first_name, last_name, role, phone, registration_number, is_active, email_verified) VALUES
+(uuid_generate_v4(), 'odidihope@gmail.com', '$2a$12$txKPAnKrX0ezowXzs3hSCe7IRg.tIA4g4FbWLQeyiQQ9cVZZRgk8S', 'Hope', 'Odidi', 'super_admin', '+234-800-123-4567', 'ADM001', true, true),
+(uuid_generate_v4(), 'razzahhhh@gmail.com', '$2a$12$txKPAnKrX0ezowXzs3hSCe7IRg.tIA4g4FbWLQeyiQQ9cVZZRgk8S', 'Razz', 'Admin', 'admin', '+234-800-123-4568', 'ADM002', true, true),
+(uuid_generate_v4(), 'fake.admin@example.com', '$2a$12$txKPAnKrX0ezowXzs3hSCe7IRg.tIA4g4FbWLQeyiQQ9cVZZRgk8S', 'Fake', 'Admin', 'admin', '+234-800-000-0000', 'ADM003', true, true);
 
 -- Insert sample student users
-INSERT INTO users (id, email, password_hash, first_name, last_name, role, phone, date_of_birth, registration_number) VALUES
-(uuid_generate_v4(), 'hopeodidi@gmail.com', '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj/VcSAg9S6O', 'Hope', 'Odidi', 'student', '+234-801-234-5678', '2005-03-15', 'STU001'),
-(uuid_generate_v4(), 'daggerminotaur@gmail.com', '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj/VcSAg9S6O', 'Dagger', 'Minotaur', 'student', '+234-802-345-6789', '2004-07-22', 'STU002'),
-(uuid_generate_v4(), 'fake.student@example.com', '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj/VcSAg9S6O', 'Fake', 'Student', 'student', '+234-803-456-7890', '2005-11-08', 'STU003');
+-- Password for all users is 'password123'
+INSERT INTO users (id, email, password_hash, first_name, last_name, role, phone, date_of_birth, registration_number, is_active, email_verified) VALUES
+(uuid_generate_v4(), 'hopeodidi@gmail.com', '$2a$12$txKPAnKrX0ezowXzs3hSCe7IRg.tIA4g4FbWLQeyiQQ9cVZZRgk8S', 'Hope', 'Odidi', 'student', '+234-801-234-5678', '2005-03-15', 'STU001', true, true),
+(uuid_generate_v4(), 'daggerminotaur@gmail.com', '$2a$12$txKPAnKrX0ezowXzs3hSCe7IRg.tIA4g4FbWLQeyiQQ9cVZZRgk8S', 'Dagger', 'Minotaur', 'student', '+234-802-345-6789', '2004-07-22', 'STU002', true, true),
+(uuid_generate_v4(), 'fake.student@example.com', '$2a$12$txKPAnKrX0ezowXzs3hSCe7IRg.tIA4g4FbWLQeyiQQ9cVZZRgk8S', 'Fake', 'Student', 'student', '+234-803-456-7890', '2005-11-08', 'STU003', true, true);
 
 -- Get IDs for foreign key references
 DO $$
@@ -53,8 +79,8 @@ BEGIN
     SELECT id INTO jamb_institution_id FROM institutions WHERE code = 'JAMB';
     
     -- Get user IDs
-    SELECT id INTO admin_user_id FROM users WHERE email = 'admin@smartcbt.com';
-    SELECT id INTO student_user_id FROM users WHERE email = 'john.doe@student.com';
+    SELECT id INTO admin_user_id FROM users WHERE email = 'odidihope@gmail.com';
+    SELECT id INTO student_user_id FROM users WHERE email = 'hopeodidi@gmail.com';
 
     -- Insert sample question bank
     INSERT INTO question_banks (id, title, subject_id, institution_id, created_by, description, difficulty_level)

@@ -1,31 +1,37 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
+import { toast } from "sonner";
 
 export default function AdminLoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const error = searchParams.get("error");
+    if (error) {
+      toast.error(
+        decodeURIComponent(error.replace(/\+/g, " ")) ||
+          "Invalid email or password. Please try again."
+      );
+    }
+  }, [searchParams]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
-    setError("");
-    const loginResult = await signIn("credentials", {
+    await signIn("credentials", {
       email,
       password,
-      redirect: false,
+      redirect: true,
+      callbackUrl: "/admin",
     });
-    if (loginResult && !loginResult.error) {
-      router.push("/admin");
-    } else {
-      setError("Invalid email or password");
-    }
     setLoading(false);
   }
 
@@ -50,9 +56,6 @@ export default function AdminLoginPage() {
           onChange={(e) => setPassword(e.target.value)}
           required
         />
-        {error && (
-          <div className="text-red-500 text-sm text-center">{error}</div>
-        )}
         <Button type="submit" className="w-full" disabled={loading}>
           {loading ? "Logging in..." : "Login"}
         </Button>
