@@ -393,7 +393,7 @@ export default function HomePage() {
                 <li>
                   <a
                     href="https://github.com/Daggahh/smart-cbt"
-                    className="hover:text-white transition-colors"
+                    className="hover:text-white transition-colors relative after:absolute after:left-0 after:-bottom-0.5 after:h-[2px] after:w-0 after:bg-gradient-to-r after:from-blue-500 after:to-purple-500 after:transition-all after:duration-300 hover:after:w-full"
                   >
                     GitHub Repository
                   </a>
@@ -401,7 +401,7 @@ export default function HomePage() {
                 <li>
                   <a
                     href="/docs"
-                    className="hover:text-white transition-colors"
+                    className="hover:text-white transition-colors relative after:absolute after:left-0 after:-bottom-0.5 after:h-[2px] after:w-0 after:bg-gradient-to-r after:from-blue-500 after:to-purple-500 after:transition-all after:duration-300 hover:after:w-full"
                   >
                     Documentation
                   </a>
@@ -409,7 +409,7 @@ export default function HomePage() {
                 <li>
                   <a
                     href="/status"
-                    className="hover:text-white transition-colors"
+                    className="hover:text-white transition-colors relative after:absolute after:left-0 after:-bottom-0.5 after:h-[2px] after:w-0 after:bg-gradient-to-r after:from-blue-500 after:to-purple-500 after:transition-all after:duration-300 hover:after:w-full"
                   >
                     Status
                   </a>
@@ -423,7 +423,7 @@ export default function HomePage() {
                 <li>
                   <a
                     href="https://github.com/Daggahh/smart-cbt/blob/main/CONTRIBUTING.md"
-                    className="hover:text-white transition-colors"
+                    className="hover:text-white transition-colors relative after:absolute after:left-0 after:-bottom-0.5 after:h-[2px] after:w-0 after:bg-gradient-to-r after:from-blue-500 after:to-purple-500 after:transition-all after:duration-300 hover:after:w-full"
                   >
                     Contributing
                   </a>
@@ -431,7 +431,7 @@ export default function HomePage() {
                 <li>
                   <a
                     href="https://github.com/Daggahh/smart-cbt/issues"
-                    className="hover:text-white transition-colors"
+                    className="hover:text-white transition-colors relative after:absolute after:left-0 after:-bottom-0.5 after:h-[2px] after:w-0 after:bg-gradient-to-r after:from-blue-500 after:to-purple-500 after:transition-all after:duration-300 hover:after:w-full"
                   >
                     Issues
                   </a>
@@ -445,7 +445,7 @@ export default function HomePage() {
                 <li>
                   <a
                     href="/privacy"
-                    className="hover:text-white transition-colors"
+                    className="hover:text-white transition-colors relative after:absolute after:left-0 after:-bottom-0.5 after:h-[2px] after:w-0 after:bg-gradient-to-r after:from-blue-500 after:to-purple-500 after:transition-all after:duration-300 hover:after:w-full"
                   >
                     Privacy
                   </a>
@@ -453,7 +453,7 @@ export default function HomePage() {
                 <li>
                   <a
                     href="/terms"
-                    className="hover:text-white transition-colors"
+                    className="hover:text-white transition-colors relative after:absolute after:left-0 after:-bottom-0.5 after:h-[2px] after:w-0 after:bg-gradient-to-r after:from-blue-500 after:to-purple-500 after:transition-all after:duration-300 hover:after:w-full"
                   >
                     Terms
                   </a>
@@ -461,7 +461,7 @@ export default function HomePage() {
                 <li>
                   <a
                     href="https://github.com/Daggahh/smart-cbt/blob/main/LICENSE"
-                    className="hover:text-white transition-colors"
+                    className="hover:text-white transition-colors relative after:absolute after:left-0 after:-bottom-0.5 after:h-[2px] after:w-0 after:bg-gradient-to-r after:from-blue-500 after:to-purple-500 after:transition-all after:duration-300 hover:after:w-full"
                   >
                     License
                   </a>
