@@ -1,12 +1,12 @@
-"use client"
-import { BackgroundBeams } from "@/components/ui/background-beams"
-import { TextGenerateEffect } from "@/components/ui/text-generate-effect"
-import { BentoGrid, BentoGridItem } from "@/components/ui/bento-grid"
-import { FloatingNav } from "@/components/ui/floating-navbar"
-import { Spotlight } from "@/components/ui/spotlight"
-import { Button } from "@/components/ui/moving-border"
-import { Badge } from "@/components/ui/badge"
-import { SmartCBTLogo } from "@/components/smart-cbt-logo"
+"use client";
+import { BackgroundBeams } from "@/components/ui/background-beams";
+import { TextGenerateEffect } from "@/components/ui/text-generate-effect";
+import { BentoGrid, BentoGridItem } from "@/components/ui/bento-grid";
+import { FloatingNav } from "@/components/ui/floating-navbar";
+import { Spotlight } from "@/components/ui/spotlight";
+import { Button } from "@/components/ui/moving-border";
+import { Badge } from "@/components/ui/badge";
+import { SmartCBTLogo } from "@/components/smart-cbt-logo";
 import {
   BookOpen,
   Code,
@@ -22,8 +22,8 @@ import {
   Lock,
   Globe,
   Rocket,
-} from "lucide-react"
-import Link from "next/link"
+} from "lucide-react";
+import Link from "next/link";
 
 const navItems = [
   {
@@ -46,10 +46,10 @@ const navItems = [
     link: "https://github.com/smartcbt/platform",
     icon: <Github className="h-4 w-4 text-neutral-500 dark:text-white" />,
   },
-]
+];
 
 export default function DocsPage() {
-  const words = "Complete Documentation for Smart CBT Platform"
+  const words = "Complete Documentation for Smart CBT Platform";
 
   const quickStartSteps = [
     {
@@ -80,7 +80,7 @@ export default function DocsPage() {
       code: "npm run dev",
       icon: <Rocket className="w-6 h-6" />,
     },
-  ]
+  ];
 
   return (
     <div className="min-h-screen bg-black/[0.96] antialiased bg-grid-white/[0.02] relative overflow-hidden">
@@ -89,7 +89,10 @@ export default function DocsPage() {
       {/* Hero Section */}
       <div className="h-screen w-full rounded-md bg-neutral-950 relative flex flex-col items-center justify-center antialiased">
         <div className="absolute inset-0 w-full h-full bg-neutral-950 [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]"></div>
-        <Spotlight className="-top-40 left-0 md:left-60 md:-top-20" fill="white" />
+        <Spotlight
+          className="-top-40 left-0 md:left-60 md:-top-20"
+          fill="white"
+        />
         <BackgroundBeams />
 
         <div className="max-w-7xl mx-auto relative z-10 w-full pt-20 md:pt-0 px-4">
@@ -112,8 +115,8 @@ export default function DocsPage() {
             />
 
             <p className="text-neutral-500 max-w-2xl mx-auto my-8 text-lg text-center relative z-10">
-              Everything you need to deploy, customize, and scale Smart CBT for your organization. From quick setup to
-              advanced configurations.
+              Everything you need to deploy, customize, and scale Smart CBT for
+              your organization. From quick setup to advanced configurations.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
@@ -145,7 +148,9 @@ export default function DocsPage() {
       <section id="quick-start" className="py-20 px-4 relative">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-white mb-4">Quick Start Guide</h2>
+            <h2 className="text-4xl font-bold text-white mb-4">
+              Quick Start Guide
+            </h2>
             <p className="text-xl text-neutral-400 max-w-2xl mx-auto">
               Get Smart CBT running in your environment within minutes
             </p>
@@ -175,10 +180,15 @@ export default function DocsPage() {
       </section>
 
       {/* Features Documentation */}
-      <section id="features" className="py-20 bg-neutral-900/50 backdrop-blur-sm">
+      <section
+        id="features"
+        className="py-20 bg-neutral-900/50 backdrop-blur-sm"
+      >
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-white mb-4">Feature Documentation</h2>
+            <h2 className="text-4xl font-bold text-white mb-4">
+              Feature Documentation
+            </h2>
             <p className="text-xl text-neutral-400 max-w-2xl mx-auto">
               Comprehensive guides for every Smart CBT feature
             </p>
@@ -241,7 +251,9 @@ export default function DocsPage() {
       <section id="api" className="py-20 px-4">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-white mb-4">API Documentation</h2>
+            <h2 className="text-4xl font-bold text-white mb-4">
+              API Documentation
+            </h2>
             <p className="text-xl text-neutral-400 max-w-2xl mx-auto">
               RESTful APIs for integration and custom development
             </p>
@@ -292,13 +304,17 @@ export default function DocsPage() {
               >
                 <div className="flex items-center space-x-3 mb-4">
                   <Code className="w-6 h-6 text-blue-400" />
-                  <h3 className="text-xl font-semibold text-white">{api.title}</h3>
+                  <h3 className="text-xl font-semibold text-white">
+                    {api.title}
+                  </h3>
                 </div>
                 <p className="text-neutral-400 mb-4">{api.description}</p>
                 <div className="space-y-2">
                   <div className="text-sm">
                     <span className="text-neutral-500">Endpoint:</span>
-                    <code className="ml-2 text-green-400 bg-neutral-800 px-2 py-1 rounded">{api.endpoint}</code>
+                    <code className="ml-2 text-green-400 bg-neutral-800 px-2 py-1 rounded">
+                      {api.endpoint}
+                    </code>
                   </div>
                   <div className="flex items-center space-x-2">
                     <span className="text-neutral-500 text-sm">Methods:</span>
@@ -319,7 +335,9 @@ export default function DocsPage() {
       <section className="py-20 bg-neutral-900/50 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-white mb-4">Technology Stack</h2>
+            <h2 className="text-4xl font-bold text-white mb-4">
+              Technology Stack
+            </h2>
             <p className="text-xl text-neutral-400 max-w-2xl mx-auto">
               Modern, scalable technologies powering Smart CBT
             </p>
@@ -327,16 +345,35 @@ export default function DocsPage() {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
-              { category: "Frontend", techs: ["Next.js 14", "TailwindCSS", "Framer Motion", "shadcn/ui"] },
-              { category: "Backend", techs: ["Node.js", "PostgreSQL", "Prisma ORM", "Redis"] },
-              { category: "AI & Services", techs: ["Gemini AI", "Resend", "Cloudinary", "BullMQ"] },
-              { category: "DevOps", techs: ["Docker", "Kubernetes", "Prometheus", "Grafana"] },
+              {
+                category: "Frontend",
+                techs: [
+                  "Next.js 14",
+                  "TailwindCSS",
+                  "Framer Motion",
+                  "shadcn/ui",
+                ],
+              },
+              {
+                category: "Backend",
+                techs: ["Node.js", "PostgreSQL", "Prisma ORM", "Redis"],
+              },
+              {
+                category: "AI & Services",
+                techs: ["Gemini AI", "Resend", "Cloudinary", "BullMQ"],
+              },
+              {
+                category: "DevOps",
+                techs: ["Docker", "Kubernetes", "Prometheus", "Grafana"],
+              },
             ].map((stack, index) => (
               <div
                 key={index}
                 className="bg-neutral-900 border border-neutral-800 rounded-xl p-6 hover:border-neutral-700 transition-colors"
               >
-                <h3 className="text-xl font-semibold text-white mb-4">{stack.category}</h3>
+                <h3 className="text-xl font-semibold text-white mb-4">
+                  {stack.category}
+                </h3>
                 <div className="space-y-2">
                   {stack.techs.map((tech) => (
                     <div key={tech} className="flex items-center space-x-2">
@@ -354,9 +391,12 @@ export default function DocsPage() {
       {/* CTA Section */}
       <section className="py-20 bg-gradient-to-r from-blue-600/20 to-purple-600/20 backdrop-blur-sm">
         <div className="max-w-4xl mx-auto px-4 text-center">
-          <h2 className="text-4xl font-bold text-white mb-6">Ready to Get Started?</h2>
+          <h2 className="text-4xl font-bold text-white mb-6">
+            Ready to Get Started?
+          </h2>
           <p className="text-xl text-neutral-300 mb-8 max-w-2xl mx-auto">
-            Join the community building the future of digital testing. Deploy Smart CBT today.
+            Join the community building the future of digital testing. Deploy
+            Smart CBT today.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button
@@ -381,5 +421,5 @@ export default function DocsPage() {
         </div>
       </section>
     </div>
-  )
+  );
 }

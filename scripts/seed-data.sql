@@ -1,5 +1,6 @@
 -- Smart CBT Seed Data
 -- Insert sample data for testing and development
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- Insert sample institutions
 INSERT INTO institutions (id, name, code, address, contact_email, contact_phone) VALUES

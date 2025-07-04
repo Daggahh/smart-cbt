@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import { authAPI } from "@/lib/api";
+import { signIn } from "next-auth/react";
 
 export default function AdminLoginPage() {
   const [email, setEmail] = useState("");
@@ -16,11 +16,15 @@ export default function AdminLoginPage() {
     e.preventDefault();
     setLoading(true);
     setError("");
-    const response = await authAPI.login({ email, password, role: "admin" });
-    if (response.success) {
+    const loginResult = await signIn("credentials", {
+      email,
+      password,
+      redirect: false,
+    });
+    if (loginResult && !loginResult.error) {
       router.push("/admin");
     } else {
-      setError(response.error || "Login failed");
+      setError("Invalid email or password");
     }
     setLoading(false);
   }

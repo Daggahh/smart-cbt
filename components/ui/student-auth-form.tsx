@@ -8,6 +8,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { authAPI } from "@/lib/api";
 import { ChevronRight } from "lucide-react";
+import { signIn } from "next-auth/react";
 
 type FormType =
   | "login"
@@ -79,15 +80,15 @@ export default function StudentAuthForm({ formType }: StudentAuthFormProps) {
       let response;
       switch (formType) {
         case "login":
-          response = await authAPI.login({
+          const loginResult = await signIn("credentials", {
             email: formData.email,
             password: formData.password,
-            role: "student",
+            redirect: false,
           });
-          if (response.success) {
+          if (loginResult && !loginResult.error) {
             router.push("/student");
           } else {
-            setError(response.error || "Login failed");
+            setError("Invalid email or password");
           }
           break;
 

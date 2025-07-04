@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { getToken } from "next-auth/jwt";
 
 // Define public routes that don't require authentication
 const publicRoutes = [
@@ -38,7 +39,7 @@ const adminRoutes = [
 // Define student routes that require student authentication
 const studentRoutes = ["/student", "/student/exam", "/student/results"];
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Allow public routes
@@ -46,10 +47,11 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Check for authentication token
-  const token =
-    request.cookies.get("auth-token")?.value ||
-    request.headers.get("authorization")?.replace("Bearer ", "");
+  // Use next-auth getToken to check session and role
+  const token = await getToken({
+    req: request,
+    secret: process.env.JWT_SECRET,
+  });
 
   if (!token) {
     // Redirect to appropriate login page based on the route
@@ -63,47 +65,25 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/auth/student/login", request.url));
   }
 
-  // Verify token and check user role (you'll need to implement this based on your auth strategy)
-  try {
-    // For now, we'll just check if token exists
-    // In a real implementation, you'd verify the JWT token and extract user role
-    const userRole = request.cookies.get("user-role")?.value || "student";
-
-    // Check admin routes access
-    if (adminRoutes.some((route) => pathname.startsWith(route))) {
-      if (userRole !== "admin" && userRole !== "super_admin") {
-        return NextResponse.redirect(
-          new URL("/auth/admin/login?error=unauthorized", request.url)
-        );
-      }
-    }
-
-    // Check student routes access
-    if (studentRoutes.some((route) => pathname.startsWith(route))) {
-      if (userRole !== "student") {
-        return NextResponse.redirect(
-          new URL("/auth/student/login?error=unauthorized", request.url)
-        );
-      }
-    }
-
-    return NextResponse.next();
-  } catch (error) {
-    // Token is invalid, redirect to login
-    if (adminRoutes.some((route) => pathname.startsWith(route))) {
+  // Check admin routes access
+  if (adminRoutes.some((route) => pathname.startsWith(route))) {
+    if (token.role !== "admin" && token.role !== "super_admin") {
       return NextResponse.redirect(
-        new URL("/auth/admin/login?error=invalid_token", request.url)
+        new URL("/auth/admin/login?error=unauthorized", request.url)
       );
     }
-    if (studentRoutes.some((route) => pathname.startsWith(route))) {
-      return NextResponse.redirect(
-        new URL("/auth/student/login?error=invalid_token", request.url)
-      );
-    }
-    return NextResponse.redirect(
-      new URL("/auth/student/login?error=invalid_token", request.url)
-    );
   }
+
+  // Check student routes access
+  if (studentRoutes.some((route) => pathname.startsWith(route))) {
+    if (token.role !== "student") {
+      return NextResponse.redirect(
+        new URL("/auth/student/login?error=unauthorized", request.url)
+      );
+    }
+  }
+
+  return NextResponse.next();
 }
 
 export const config = {
