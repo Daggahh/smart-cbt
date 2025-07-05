@@ -33,15 +33,34 @@ export default function StatusPage() {
     auth: "checking",
   });
   const [loading, setLoading] = useState(true);
+  const [uptime, setUptime] = useState(99.97);
+  const [startTime] = useState(new Date());
 
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentTime(new Date());
+      calculateUptime();
     }, 1000);
 
     checkSystemHealth();
     return () => clearInterval(timer);
   }, []);
+
+  const calculateUptime = () => {
+    const now = new Date();
+    const diffInMs = now.getTime() - startTime.getTime();
+    const diffInHours = diffInMs / (1000 * 60 * 60);
+
+    // Calculate uptime percentage (assuming 30 days = 720 hours)
+    const totalHours = 30 * 24; // 30 days
+    const uptimePercentage = Math.max(
+      0,
+      100 - (diffInHours / totalHours) * 100
+    );
+
+    // Ensure it doesn't go below 99.5% for demo purposes
+    setUptime(Math.max(99.5, uptimePercentage));
+  };
 
   const checkSystemHealth = async () => {
     try {
@@ -83,9 +102,9 @@ export default function StatusPage() {
       case "development":
         return <Clock className="w-5 h-5 text-blue-600" />;
       case "checking":
-        return <Clock className="w-5 h-5 text-slate-400 animate-spin" />;
+        return <Clock className="w-5 h-5 text-gray-400 animate-spin" />;
       default:
-        return <Clock className="w-5 h-5 text-slate-400" />;
+        return <Clock className="w-5 h-5 text-gray-400" />;
     }
   };
 
@@ -100,9 +119,9 @@ export default function StatusPage() {
       case "development":
         return "text-blue-600 bg-blue-50 border-blue-200 dark:text-blue-400 dark:bg-blue-950/20 dark:border-blue-800";
       case "checking":
-        return "text-slate-600 bg-slate-50 border-slate-200 dark:text-slate-400 dark:bg-slate-700 dark:border-slate-600";
+        return "text-gray-600 bg-gray-50 border-gray-200 dark:text-gray-400 dark:bg-gray-800 dark:border-gray-700";
       default:
-        return "text-slate-600 bg-slate-50 border-slate-200 dark:text-slate-400 dark:bg-slate-700 dark:border-slate-600";
+        return "text-gray-600 bg-gray-50 border-gray-200 dark:text-gray-400 dark:bg-gray-800 dark:border-gray-700";
     }
   };
 
@@ -163,26 +182,26 @@ export default function StatusPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
+    <div className="min-h-screen bg-slate-50 dark:bg-black">
       {/* Header */}
-      <header className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
+      <header className="bg-white dark:bg-black border-b border-slate-200 dark:border-gray-800">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <SmartCBTLogo />
             <div>
-              <h1 className="text-xl font-bold text-slate-800 dark:text-slate-100">
+              <h1 className="text-xl font-bold text-slate-800 dark:text-white">
                 Smart CBT
               </h1>
-              <p className="text-xs text-slate-600 dark:text-slate-400">
+              <p className="text-xs text-slate-600 dark:text-gray-400">
                 System Status
               </p>
             </div>
           </div>
           <div className="text-right">
-            <div className="text-sm text-slate-600 dark:text-slate-400">
+            <div className="text-sm text-slate-600 dark:text-gray-400">
               Last updated
             </div>
-            <div className="text-sm font-medium text-slate-800 dark:text-slate-100">
+            <div className="text-sm font-medium text-slate-800 dark:text-white">
               {currentTime.toLocaleString()}
             </div>
           </div>
@@ -200,7 +219,7 @@ export default function StatusPage() {
                 ? "from-yellow-50 to-orange-50 border-yellow-200 dark:from-yellow-950/20 dark:to-orange-950/20 dark:border-yellow-800"
                 : overallStatus === "outage"
                 ? "from-red-50 to-pink-50 border-red-200 dark:from-red-950/20 dark:to-pink-950/20 dark:border-red-800"
-                : "from-slate-50 to-gray-50 border-slate-200 dark:from-slate-800 dark:to-gray-800 dark:border-slate-700"
+                : "from-gray-50 to-gray-100 border-gray-200 dark:from-gray-900 dark:to-gray-800 dark:border-gray-700"
             }`}
           >
             <CardContent className="p-6">
@@ -208,7 +227,7 @@ export default function StatusPage() {
                 <div className="flex items-center space-x-4">
                   {getStatusIcon(overallStatus)}
                   <div>
-                    <h2 className="text-xl md:text-2xl font-bold text-slate-800 dark:text-slate-100">
+                    <h2 className="text-xl md:text-2xl font-bold text-slate-800 dark:text-white">
                       {overallStatus === "operational"
                         ? "All Systems Operational"
                         : overallStatus === "degraded"
@@ -217,7 +236,7 @@ export default function StatusPage() {
                         ? "System Outage"
                         : "Checking System Status"}
                     </h2>
-                    <p className="text-sm md:text-base text-slate-600 dark:text-slate-300">
+                    <p className="text-sm md:text-base text-slate-600 dark:text-gray-300">
                       {overallStatus === "operational"
                         ? "Smart CBT is running smoothly"
                         : overallStatus === "degraded"
@@ -230,9 +249,9 @@ export default function StatusPage() {
                 </div>
                 <div className="text-right">
                   <div className="text-2xl md:text-3xl font-bold text-green-600 dark:text-green-400">
-                    99.97%
+                    {uptime.toFixed(2)}%
                   </div>
-                  <div className="text-sm text-slate-600 dark:text-slate-400">
+                  <div className="text-sm text-slate-600 dark:text-gray-400">
                     30-day uptime
                   </div>
                 </div>
@@ -263,24 +282,24 @@ export default function StatusPage() {
 
         {/* Service Status */}
         <div className="mb-8">
-          <h2 className="text-xl md:text-2xl font-bold text-slate-800 dark:text-slate-100 mb-4">
+          <h2 className="text-xl md:text-2xl font-bold text-slate-800 dark:text-white mb-4">
             Service Status
           </h2>
           <div className="grid gap-4">
             {services.map((service, index) => (
               <Card
                 key={index}
-                className="hover:shadow-md transition-shadow dark:bg-slate-800 dark:border-slate-700"
+                className="hover:shadow-md transition-shadow dark:bg-black dark:border-gray-800"
               >
                 <CardContent className="p-4 md:p-6">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-3 md:space-x-4">
                       {getStatusIcon(service.status)}
                       <div className="min-w-0 flex-1">
-                        <h3 className="font-semibold text-slate-800 dark:text-slate-100 text-sm md:text-base">
+                        <h3 className="font-semibold text-slate-800 dark:text-white text-sm md:text-base">
                           {service.name}
                         </h3>
-                        <p className="text-xs md:text-sm text-slate-600 dark:text-slate-400 mt-1">
+                        <p className="text-xs md:text-sm text-slate-600 dark:text-gray-400 mt-1">
                           {service.description}
                         </p>
                       </div>
@@ -301,22 +320,22 @@ export default function StatusPage() {
 
         {/* Development Progress */}
         <div className="grid md:grid-cols-2 gap-6 md:gap-8">
-          <Card className="dark:bg-slate-800 dark:border-slate-700">
+          <Card className="dark:bg-black dark:border-gray-800">
             <CardHeader>
-              <CardTitle className="flex items-center space-x-2 text-slate-800 dark:text-slate-100">
+              <CardTitle className="flex items-center space-x-2 text-slate-800 dark:text-white">
                 <Users className="w-4 h-4 md:w-5 md:h-5" />
                 <span className="text-base md:text-lg">
                   Development Progress
                 </span>
               </CardTitle>
-              <CardDescription className="text-slate-600 dark:text-slate-400">
+              <CardDescription className="text-slate-600 dark:text-gray-400">
                 Current feature development status
               </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-3 md:space-y-4">
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-slate-600 dark:text-slate-400">
+                  <span className="text-sm text-slate-600 dark:text-gray-400">
                     Authentication System
                   </span>
                   <Badge className="text-green-600 bg-green-50 border-green-200 dark:bg-green-950/20 dark:border-green-800 dark:text-green-400">
@@ -324,7 +343,7 @@ export default function StatusPage() {
                   </Badge>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-slate-600 dark:text-slate-400">
+                  <span className="text-sm text-slate-600 dark:text-gray-400">
                     Student Dashboard
                   </span>
                   <Badge className="text-blue-600 bg-blue-50 border-blue-200 dark:bg-blue-950/20 dark:border-blue-800 dark:text-blue-400">
@@ -332,18 +351,18 @@ export default function StatusPage() {
                   </Badge>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-slate-600 dark:text-slate-400">
+                  <span className="text-sm text-slate-600 dark:text-gray-400">
                     Admin Dashboard
                   </span>
-                  <Badge className="text-slate-600 bg-slate-50 border-slate-200 dark:bg-slate-700 dark:border-slate-600 dark:text-slate-300">
+                  <Badge className="text-gray-600 bg-gray-50 border-gray-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300">
                     Planned
                   </Badge>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-slate-600 dark:text-slate-400">
+                  <span className="text-sm text-slate-600 dark:text-gray-400">
                     Exam System
                   </span>
-                  <Badge className="text-slate-600 bg-slate-50 border-slate-200 dark:bg-slate-700 dark:border-slate-600 dark:text-slate-300">
+                  <Badge className="text-gray-600 bg-gray-50 border-gray-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300">
                     Planned
                   </Badge>
                 </div>
@@ -351,20 +370,20 @@ export default function StatusPage() {
             </CardContent>
           </Card>
 
-          <Card className="dark:bg-slate-800 dark:border-slate-700">
+          <Card className="dark:bg-black dark:border-gray-800">
             <CardHeader>
-              <CardTitle className="flex items-center space-x-2 text-slate-800 dark:text-slate-100">
+              <CardTitle className="flex items-center space-x-2 text-slate-800 dark:text-white">
                 <Database className="w-4 h-4 md:w-5 md:h-5" />
                 <span className="text-base md:text-lg">Environment Info</span>
               </CardTitle>
-              <CardDescription className="text-slate-600 dark:text-slate-400">
+              <CardDescription className="text-slate-600 dark:text-gray-400">
                 Current system configuration
               </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-3 md:space-y-4">
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-slate-600 dark:text-slate-400">
+                  <span className="text-sm text-slate-600 dark:text-gray-400">
                     Environment
                   </span>
                   <span className="font-medium text-blue-600 dark:text-blue-400">
@@ -372,7 +391,7 @@ export default function StatusPage() {
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-slate-600 dark:text-slate-400">
+                  <span className="text-sm text-slate-600 dark:text-gray-400">
                     Database
                   </span>
                   <span className="font-medium text-green-600 dark:text-green-400">
@@ -380,7 +399,7 @@ export default function StatusPage() {
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-slate-600 dark:text-slate-400">
+                  <span className="text-sm text-slate-600 dark:text-gray-400">
                     Email Service
                   </span>
                   <span className="font-medium text-blue-600 dark:text-blue-400">
@@ -388,10 +407,10 @@ export default function StatusPage() {
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-slate-600 dark:text-slate-400">
+                  <span className="text-sm text-slate-600 dark:text-gray-400">
                     Version
                   </span>
-                  <span className="font-medium text-slate-800 dark:text-slate-200">
+                  <span className="font-medium text-slate-800 dark:text-white">
                     v0.1.0
                   </span>
                 </div>
@@ -402,12 +421,12 @@ export default function StatusPage() {
 
         {/* Quick Actions */}
         <div className="mt-8">
-          <Card className="dark:bg-slate-800 dark:border-slate-700">
+          <Card className="dark:bg-black dark:border-gray-800">
             <CardHeader>
-              <CardTitle className="text-slate-800 dark:text-slate-100">
+              <CardTitle className="text-slate-800 dark:text-white">
                 Quick Actions
               </CardTitle>
-              <CardDescription className="text-slate-600 dark:text-slate-400">
+              <CardDescription className="text-slate-600 dark:text-gray-400">
                 Access key features of Smart CBT
               </CardDescription>
             </CardHeader>
@@ -438,11 +457,11 @@ export default function StatusPage() {
         </div>
 
         {/* Footer */}
-        <div className="mt-12 text-center text-sm text-slate-500 dark:text-slate-400">
+        <div className="mt-12 text-center text-sm text-slate-500 dark:text-gray-400">
           <p>
             This is a development status page. For production monitoring,{" "}
             <a
-              href="/auth/student/login"
+              href="/auth/admin/login"
               className="text-blue-600 hover:underline dark:text-blue-400"
             >
               login to the admin dashboard

@@ -1,3 +1,5 @@
+"use client";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -18,309 +20,481 @@ import {
   Settings,
   CheckCircle,
   Server,
+  AlertTriangle,
+  Clock,
+  FileText,
+  Database,
+  Zap,
+  Activity,
 } from "lucide-react";
 import Link from "next/link";
 import { SmartCBTLogo } from "@/components/smart-cbt-logo";
+import { adminAPI } from "@/lib/api";
+import {
+  getStatusColor,
+  getHealthColor,
+  generateMockSystemStats,
+  generateMockSystemHealth,
+  generateMockExams,
+} from "@/lib/admin-utils";
+
+// Types for admin dashboard
+interface SystemStats {
+  totalCandidates: number;
+  activeExams: number;
+  completedToday: number;
+  systemUptime: number;
+}
+
+interface SystemHealth {
+  serverLoad: number;
+  databasePerformance: number;
+  networkLatency: number;
+  activeConnections: number;
+}
+
+interface Exam {
+  id: number;
+  title: string;
+  candidates: number;
+  status: string;
+  completion: number;
+  startTime: string;
+  endTime: string;
+}
 
 export default function AdminDashboard() {
-  const systemStats = {
-    totalCandidates: 2847392,
-    activeExams: 15,
-    completedToday: 12847,
-    systemUptime: 99.97,
+  const [systemStats, setSystemStats] = useState<SystemStats>({
+    totalCandidates: 0,
+    activeExams: 0,
+    completedToday: 0,
+    systemUptime: 0,
+  });
+  const [systemHealth, setSystemHealth] = useState<SystemHealth>({
+    serverLoad: 0,
+    databasePerformance: 0,
+    networkLatency: 0,
+    activeConnections: 0,
+  });
+  const [recentExams, setRecentExams] = useState<Exam[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Fetch real data from API
+    fetchDashboardData();
+    fetchSystemHealth();
+
+    // Refresh data every 30 seconds
+    const interval = setInterval(() => {
+      fetchDashboardData();
+      fetchSystemHealth();
+    }, 30000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const fetchDashboardData = async () => {
+    try {
+      // For now, simulate API call with realistic data
+      // TODO: Replace with actual API calls
+      const mockData = generateMockSystemStats();
+      setSystemStats(mockData);
+
+      const mockExams = generateMockExams();
+      setRecentExams(mockExams);
+    } catch (error) {
+      console.error("Failed to fetch dashboard data:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const recentExams = [
-    {
-      id: 1,
-      title: "JAMB UTME 2024 - Batch A",
-      candidates: 45000,
-      status: "active",
-      completion: 78,
-      startTime: "09:00 AM",
-      endTime: "12:00 PM",
-    },
-    {
-      id: 2,
-      title: "WAEC Mathematics Mock",
-      candidates: 12500,
-      status: "completed",
-      completion: 100,
-      startTime: "02:00 PM",
-      endTime: "04:00 PM",
-    },
-    {
-      id: 3,
-      title: "University Entrance - Science",
-      candidates: 8750,
-      status: "scheduled",
-      completion: 0,
-      startTime: "10:00 AM",
-      endTime: "01:00 PM",
-    },
-  ];
+  const fetchSystemHealth = async () => {
+    try {
+      // TODO: Replace with actual system health API
+      const mockHealth = generateMockSystemHealth();
+      setSystemHealth(mockHealth);
+    } catch (error) {
+      console.error("Failed to fetch system health:", error);
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-slate-50 dark:bg-black">
       {/* Header */}
-      <header className="bg-white border-b sticky top-0 z-50">
+      <header className="bg-white dark:bg-gray-900 border-b border-slate-200 dark:border-gray-800 sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <SmartCBTLogo />
             <div>
-              <h1 className="text-xl font-bold text-slate-800">Smart CBT</h1>
-              <p className="text-xs text-slate-600">Admin Dashboard</p>
+              <h1 className="text-lg md:text-xl font-bold text-slate-800 dark:text-white">
+                Smart CBT
+              </h1>
+              <p className="text-xs text-slate-600 dark:text-gray-400">
+                Admin Dashboard
+              </p>
             </div>
           </div>
 
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2 md:space-x-4">
             <Badge
               variant="outline"
-              className="text-green-600 border-green-600"
+              className="text-green-600 border-green-600 dark:text-green-400 dark:border-green-400 text-xs md:text-sm"
             >
               <CheckCircle className="w-3 h-3 mr-1" />
-              System Healthy
+              <span className="hidden sm:inline">System Healthy</span>
+              <span className="sm:hidden">Healthy</span>
             </Badge>
-            <Button variant="ghost" size="sm">
+            <Button variant="ghost" size="sm" className="hidden sm:flex">
               <Settings className="w-4 h-4 mr-2" />
               Settings
+            </Button>
+            <Button variant="ghost" size="sm" className="sm:hidden">
+              <Settings className="w-4 h-4" />
             </Button>
           </div>
         </div>
       </header>
 
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-6 md:py-8">
         {/* System Overview */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-slate-800 mb-2">
+        <div className="mb-6 md:mb-8">
+          <h1 className="text-2xl md:text-3xl font-bold text-slate-800 dark:text-white mb-2">
             System Overview
           </h1>
-          <p className="text-slate-600">
+          <p className="text-sm md:text-base text-slate-600 dark:text-gray-400">
             Monitor and manage your CBT platform operations
           </p>
         </div>
 
         {/* Key Metrics */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <Card>
-            <CardContent className="p-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-6 md:mb-8">
+          <Card className="dark:bg-gray-900 dark:border-gray-800">
+            <CardContent className="p-4 md:p-6">
               <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-slate-600">
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs md:text-sm font-medium text-slate-600 dark:text-gray-400">
                     Total Candidates
                   </p>
-                  <p className="text-2xl font-bold text-slate-800">
-                    {systemStats.totalCandidates.toLocaleString()}
+                  <p className="text-lg md:text-2xl font-bold text-slate-800 dark:text-white">
+                    {loading
+                      ? "..."
+                      : systemStats.totalCandidates.toLocaleString()}
                   </p>
-                  <p className="text-xs text-green-600 mt-1">
+                  <p className="text-xs text-green-600 dark:text-green-400 mt-1">
                     +12% from last month
                   </p>
                 </div>
-                <Users className="w-8 h-8 text-blue-600" />
+                <Users className="w-6 h-6 md:w-8 md:h-8 text-blue-600 dark:text-blue-400 flex-shrink-0" />
               </div>
             </CardContent>
           </Card>
 
-          <Card>
-            <CardContent className="p-6">
+          <Card className="dark:bg-gray-900 dark:border-gray-800">
+            <CardContent className="p-4 md:p-6">
               <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-slate-600">
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs md:text-sm font-medium text-slate-600 dark:text-gray-400">
                     Active Exams
                   </p>
-                  <p className="text-2xl font-bold text-slate-800">
-                    {systemStats.activeExams}
+                  <p className="text-lg md:text-2xl font-bold text-slate-800 dark:text-white">
+                    {loading ? "..." : systemStats.activeExams}
                   </p>
-                  <p className="text-xs text-blue-600 mt-1">Live monitoring</p>
+                  <p className="text-xs text-blue-600 dark:text-blue-400 mt-1">
+                    Live monitoring
+                  </p>
                 </div>
-                <Calendar className="w-8 h-8 text-green-600" />
+                <Calendar className="w-6 h-6 md:w-8 md:h-8 text-green-600 dark:text-green-400 flex-shrink-0" />
               </div>
             </CardContent>
           </Card>
 
-          <Card>
-            <CardContent className="p-6">
+          <Card className="dark:bg-gray-900 dark:border-gray-800">
+            <CardContent className="p-4 md:p-6">
               <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-slate-600">
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs md:text-sm font-medium text-slate-600 dark:text-gray-400">
                     Completed Today
                   </p>
-                  <p className="text-2xl font-bold text-slate-800">
-                    {systemStats.completedToday.toLocaleString()}
+                  <p className="text-lg md:text-2xl font-bold text-slate-800 dark:text-white">
+                    {loading
+                      ? "..."
+                      : systemStats.completedToday.toLocaleString()}
                   </p>
-                  <p className="text-xs text-orange-600 mt-1">Peak: 2:00 PM</p>
+                  <p className="text-xs text-orange-600 dark:text-orange-400 mt-1">
+                    Peak: 2:00 PM
+                  </p>
                 </div>
-                <CheckCircle className="w-8 h-8 text-orange-600" />
+                <CheckCircle className="w-6 h-6 md:w-8 md:h-8 text-orange-600 dark:text-orange-400 flex-shrink-0" />
               </div>
             </CardContent>
           </Card>
 
-          <Card>
-            <CardContent className="p-6">
+          <Card className="dark:bg-gray-900 dark:border-gray-800">
+            <CardContent className="p-4 md:p-6">
               <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-slate-600">
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs md:text-sm font-medium text-slate-600 dark:text-gray-400">
                     System Uptime
                   </p>
-                  <p className="text-2xl font-bold text-slate-800">
-                    {systemStats.systemUptime}%
+                  <p className="text-lg md:text-2xl font-bold text-slate-800 dark:text-white">
+                    {loading ? "..." : systemStats.systemUptime}%
                   </p>
-                  <p className="text-xs text-green-600 mt-1">Last 30 days</p>
+                  <p className="text-xs text-green-600 dark:text-green-400 mt-1">
+                    Last 30 days
+                  </p>
                 </div>
-                <Server className="w-8 h-8 text-purple-600" />
+                <Server className="w-6 h-6 md:w-8 md:h-8 text-purple-600 dark:text-purple-400 flex-shrink-0" />
               </div>
             </CardContent>
           </Card>
         </div>
 
         {/* Main Dashboard Tabs */}
-        <Tabs defaultValue="exams" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5">
-            <TabsTrigger value="exams">Live Exams</TabsTrigger>
-            <TabsTrigger value="candidates">Candidates</TabsTrigger>
-            <TabsTrigger value="content">Content</TabsTrigger>
-            <TabsTrigger value="analytics">Analytics</TabsTrigger>
-            <TabsTrigger value="security">Security</TabsTrigger>
+        <Tabs defaultValue="exams" className="space-y-4 md:space-y-6">
+          <TabsList className="grid w-full grid-cols-3 md:grid-cols-5 h-auto">
+            <TabsTrigger
+              value="exams"
+              className="text-xs md:text-sm py-2 md:py-3"
+            >
+              Live Exams
+            </TabsTrigger>
+            <TabsTrigger
+              value="candidates"
+              className="text-xs md:text-sm py-2 md:py-3"
+            >
+              Candidates
+            </TabsTrigger>
+            <TabsTrigger
+              value="content"
+              className="text-xs md:text-sm py-2 md:py-3"
+            >
+              Content
+            </TabsTrigger>
+            <TabsTrigger
+              value="analytics"
+              className="text-xs md:text-sm py-2 md:py-3 hidden md:block"
+            >
+              Analytics
+            </TabsTrigger>
+            <TabsTrigger
+              value="security"
+              className="text-xs md:text-sm py-2 md:py-3 hidden md:block"
+            >
+              Security
+            </TabsTrigger>
           </TabsList>
 
           {/* Live Exams Tab */}
-          <TabsContent value="exams" className="space-y-6">
-            <div className="grid lg:grid-cols-3 gap-6">
+          <TabsContent value="exams" className="space-y-4 md:space-y-6">
+            <div className="grid lg:grid-cols-3 gap-4 md:gap-6">
               <div className="lg:col-span-2">
-                <Card>
+                <Card className="dark:bg-gray-900 dark:border-gray-800">
                   <CardHeader>
-                    <CardTitle className="flex items-center justify-between">
-                      Active Examinations
-                      <Button size="sm" asChild>
+                    <CardTitle className="flex items-center justify-between text-slate-800 dark:text-white">
+                      <span className="text-base md:text-lg">
+                        Active Examinations
+                      </span>
+                      <Button size="sm" asChild className="text-xs md:text-sm">
                         <Link href="/admin/exams/create">
                           Schedule New Exam
                         </Link>
                       </Button>
                     </CardTitle>
-                    <CardDescription>
+                    <CardDescription className="text-slate-600 dark:text-gray-400">
                       Real-time monitoring of ongoing examinations
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    {recentExams.map((exam) => (
-                      <div key={exam.id} className="border rounded-lg p-4">
-                        <div className="flex items-center justify-between mb-3">
-                          <h3 className="font-semibold text-slate-800">
-                            {exam.title}
-                          </h3>
-                          <Badge
-                            variant={
-                              exam.status === "active"
-                                ? "default"
-                                : exam.status === "completed"
-                                ? "secondary"
-                                : "outline"
-                            }
-                          >
-                            {exam.status}
-                          </Badge>
-                        </div>
+                    {loading ? (
+                      <div className="text-center py-8">
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+                        <p className="text-sm text-slate-600 dark:text-gray-400 mt-2">
+                          Loading exams...
+                        </p>
+                      </div>
+                    ) : recentExams.length === 0 ? (
+                      <div className="text-center py-8">
+                        <FileText className="w-12 h-12 text-slate-400 mx-auto mb-4" />
+                        <p className="text-slate-600 dark:text-gray-400">
+                          No exams scheduled
+                        </p>
+                        <Button size="sm" className="mt-4" asChild>
+                          <Link href="/admin/exams/create">
+                            Create First Exam
+                          </Link>
+                        </Button>
+                      </div>
+                    ) : (
+                      recentExams.map((exam) => (
+                        <div
+                          key={exam.id}
+                          className="border border-slate-200 dark:border-gray-800 rounded-lg p-3 md:p-4"
+                        >
+                          <div className="flex items-center justify-between mb-3">
+                            <h3 className="font-semibold text-slate-800 dark:text-white text-sm md:text-base truncate">
+                              {exam.title}
+                            </h3>
+                            <Badge
+                              className={`${getStatusColor(
+                                exam.status
+                              )} text-xs`}
+                            >
+                              {exam.status}
+                            </Badge>
+                          </div>
 
-                        <div className="grid grid-cols-3 gap-4 text-sm text-slate-600 mb-4">
-                          <div>
-                            <span className="font-medium">Candidates:</span>{" "}
-                            {exam.candidates.toLocaleString()}
-                          </div>
-                          <div>
-                            <span className="font-medium">Time:</span>{" "}
-                            {exam.startTime} - {exam.endTime}
-                          </div>
-                          <div>
-                            <span className="font-medium">Progress:</span>{" "}
-                            {exam.completion}%
-                          </div>
-                        </div>
-
-                        {exam.status === "active" && (
-                          <div className="space-y-2">
-                            <Progress value={exam.completion} className="h-2" />
-                            <div className="flex justify-between text-xs text-slate-500">
-                              <span>
-                                {Math.round(
-                                  (exam.completion / 100) * exam.candidates
-                                ).toLocaleString()}{" "}
-                                completed
-                              </span>
-                              <span>
-                                {(
-                                  exam.candidates -
-                                  Math.round(
-                                    (exam.completion / 100) * exam.candidates
-                                  )
-                                ).toLocaleString()}{" "}
-                                in progress
-                              </span>
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-4 text-xs md:text-sm text-slate-600 dark:text-gray-400 mb-4">
+                            <div>
+                              <span className="font-medium">Candidates:</span>{" "}
+                              {exam.candidates.toLocaleString()}
+                            </div>
+                            <div>
+                              <span className="font-medium">Time:</span>{" "}
+                              {exam.startTime} - {exam.endTime}
+                            </div>
+                            <div>
+                              <span className="font-medium">Progress:</span>{" "}
+                              {exam.completion}%
                             </div>
                           </div>
-                        )}
 
-                        <div className="flex justify-end mt-4 space-x-2">
-                          <Button variant="outline" size="sm" asChild>
-                            <Link href={`/admin/exams/${exam.id}/monitor`}>
-                              Monitor
-                            </Link>
-                          </Button>
-                          <Button variant="outline" size="sm" asChild>
-                            <Link href={`/admin/exams/${exam.id}/results`}>
-                              Results
-                            </Link>
-                          </Button>
+                          {exam.status === "active" && (
+                            <div className="space-y-2">
+                              <Progress
+                                value={exam.completion}
+                                className="h-2"
+                              />
+                              <div className="flex justify-between text-xs text-slate-500 dark:text-gray-500">
+                                <span>
+                                  {Math.round(
+                                    (exam.completion / 100) * exam.candidates
+                                  ).toLocaleString()}{" "}
+                                  completed
+                                </span>
+                                <span>
+                                  {(
+                                    exam.candidates -
+                                    Math.round(
+                                      (exam.completion / 100) * exam.candidates
+                                    )
+                                  ).toLocaleString()}{" "}
+                                  in progress
+                                </span>
+                              </div>
+                            </div>
+                          )}
+
+                          <div className="flex justify-end mt-4 space-x-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              asChild
+                              className="text-xs"
+                            >
+                              <Link href={`/admin/exams/${exam.id}/monitor`}>
+                                Monitor
+                              </Link>
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              asChild
+                              className="text-xs"
+                            >
+                              <Link href={`/admin/exams/${exam.id}/results`}>
+                                Results
+                              </Link>
+                            </Button>
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      ))
+                    )}
                   </CardContent>
                 </Card>
               </div>
 
               {/* System Health */}
-              <div className="space-y-6">
-                <Card>
+              <div className="space-y-4 md:space-y-6">
+                <Card className="dark:bg-gray-900 dark:border-gray-800">
                   <CardHeader>
-                    <CardTitle>System Health</CardTitle>
-                    <CardDescription>
+                    <CardTitle className="text-slate-800 dark:text-white text-base md:text-lg">
+                      System Health
+                    </CardTitle>
+                    <CardDescription className="text-slate-600 dark:text-gray-400">
                       Real-time system monitoring
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm">Server Load</span>
-                      <span className="text-sm font-medium">23%</span>
+                      <span className="text-xs md:text-sm text-slate-600 dark:text-gray-400">
+                        Server Load
+                      </span>
+                      <span
+                        className={`text-xs md:text-sm font-medium ${getHealthColor(
+                          systemHealth.serverLoad,
+                          "performance"
+                        )}`}
+                      >
+                        {systemHealth.serverLoad}%
+                      </span>
                     </div>
-                    <Progress value={23} className="h-2" />
+                    <Progress value={systemHealth.serverLoad} className="h-2" />
 
                     <div className="flex items-center justify-between">
-                      <span className="text-sm">Database Performance</span>
-                      <span className="text-sm font-medium">91%</span>
+                      <span className="text-xs md:text-sm text-slate-600 dark:text-gray-400">
+                        Database Performance
+                      </span>
+                      <span
+                        className={`text-xs md:text-sm font-medium ${getHealthColor(
+                          systemHealth.databasePerformance,
+                          "performance"
+                        )}`}
+                      >
+                        {systemHealth.databasePerformance}%
+                      </span>
                     </div>
-                    <Progress value={91} className="h-2" />
+                    <Progress
+                      value={systemHealth.databasePerformance}
+                      className="h-2"
+                    />
 
                     <div className="flex items-center justify-between">
-                      <span className="text-sm">Network Latency</span>
-                      <span className="text-sm font-medium text-green-600">
-                        12ms
+                      <span className="text-xs md:text-sm text-slate-600 dark:text-gray-400">
+                        Network Latency
+                      </span>
+                      <span
+                        className={`text-xs md:text-sm font-medium ${getHealthColor(
+                          systemHealth.networkLatency,
+                          "latency"
+                        )}`}
+                      >
+                        {systemHealth.networkLatency}ms
                       </span>
                     </div>
 
                     <div className="flex items-center justify-between">
-                      <span className="text-sm">Active Connections</span>
-                      <span className="text-sm font-medium">45,231</span>
+                      <span className="text-xs md:text-sm text-slate-600 dark:text-gray-400">
+                        Active Connections
+                      </span>
+                      <span className="text-xs md:text-sm font-medium text-slate-800 dark:text-white">
+                        {systemHealth.activeConnections.toLocaleString()}
+                      </span>
                     </div>
                   </CardContent>
                 </Card>
 
-                <Card>
+                <Card className="dark:bg-gray-900 dark:border-gray-800">
                   <CardHeader>
-                    <CardTitle>Quick Actions</CardTitle>
+                    <CardTitle className="text-slate-800 dark:text-white text-base md:text-lg">
+                      Quick Actions
+                    </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-3">
                     <Button
-                      className="w-full justify-start bg-transparent"
+                      className="w-full justify-start bg-transparent text-slate-700 dark:text-gray-300 hover:bg-slate-100 dark:hover:bg-gray-800"
                       variant="outline"
+                      size="sm"
                       asChild
                     >
                       <Link href="/admin/upload">
@@ -329,8 +503,9 @@ export default function AdminDashboard() {
                       </Link>
                     </Button>
                     <Button
-                      className="w-full justify-start bg-transparent"
+                      className="w-full justify-start bg-transparent text-slate-700 dark:text-gray-300 hover:bg-slate-100 dark:hover:bg-gray-800"
                       variant="outline"
+                      size="sm"
                       asChild
                     >
                       <Link href="/admin/batches">
@@ -339,8 +514,9 @@ export default function AdminDashboard() {
                       </Link>
                     </Button>
                     <Button
-                      className="w-full justify-start bg-transparent"
+                      className="w-full justify-start bg-transparent text-slate-700 dark:text-gray-300 hover:bg-slate-100 dark:hover:bg-gray-800"
                       variant="outline"
+                      size="sm"
                       asChild
                     >
                       <Link href="/admin/reports">
@@ -349,8 +525,9 @@ export default function AdminDashboard() {
                       </Link>
                     </Button>
                     <Button
-                      className="w-full justify-start bg-transparent"
+                      className="w-full justify-start bg-transparent text-slate-700 dark:text-gray-300 hover:bg-slate-100 dark:hover:bg-gray-800"
                       variant="outline"
+                      size="sm"
                       asChild
                     >
                       <Link href="/admin/security">
@@ -366,15 +543,17 @@ export default function AdminDashboard() {
 
           {/* Other tabs content would go here */}
           <TabsContent value="candidates">
-            <Card>
+            <Card className="dark:bg-gray-900 dark:border-gray-800">
               <CardHeader>
-                <CardTitle>Candidate Management</CardTitle>
-                <CardDescription>
+                <CardTitle className="text-slate-800 dark:text-white">
+                  Candidate Management
+                </CardTitle>
+                <CardDescription className="text-slate-600 dark:text-gray-400">
                   Manage registered candidates and their exam assignments
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <p className="text-slate-600">
+                <p className="text-slate-600 dark:text-gray-400">
                   Candidate management interface would be implemented here.
                 </p>
               </CardContent>
@@ -382,15 +561,17 @@ export default function AdminDashboard() {
           </TabsContent>
 
           <TabsContent value="content">
-            <Card>
+            <Card className="dark:bg-gray-900 dark:border-gray-800">
               <CardHeader>
-                <CardTitle>Content Management</CardTitle>
-                <CardDescription>
+                <CardTitle className="text-slate-800 dark:text-white">
+                  Content Management
+                </CardTitle>
+                <CardDescription className="text-slate-600 dark:text-gray-400">
                   Upload and manage question banks, exam content
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <p className="text-slate-600">
+                <p className="text-slate-600 dark:text-gray-400">
                   Content management interface would be implemented here.
                 </p>
               </CardContent>
@@ -398,15 +579,17 @@ export default function AdminDashboard() {
           </TabsContent>
 
           <TabsContent value="analytics">
-            <Card>
+            <Card className="dark:bg-gray-900 dark:border-gray-800">
               <CardHeader>
-                <CardTitle>Analytics & Reports</CardTitle>
-                <CardDescription>
+                <CardTitle className="text-slate-800 dark:text-white">
+                  Analytics & Reports
+                </CardTitle>
+                <CardDescription className="text-slate-600 dark:text-gray-400">
                   Comprehensive analytics and performance reports
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <p className="text-slate-600">
+                <p className="text-slate-600 dark:text-gray-400">
                   Analytics dashboard would be implemented here.
                 </p>
               </CardContent>
@@ -414,15 +597,17 @@ export default function AdminDashboard() {
           </TabsContent>
 
           <TabsContent value="security">
-            <Card>
+            <Card className="dark:bg-gray-900 dark:border-gray-800">
               <CardHeader>
-                <CardTitle>Security Monitoring</CardTitle>
-                <CardDescription>
+                <CardTitle className="text-slate-800 dark:text-white">
+                  Security Monitoring
+                </CardTitle>
+                <CardDescription className="text-slate-600 dark:text-gray-400">
                   Security logs, audit trails, and threat detection
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <p className="text-slate-600">
+                <p className="text-slate-600 dark:text-gray-400">
                   Security monitoring interface would be implemented here.
                 </p>
               </CardContent>
