@@ -122,7 +122,7 @@ export default function AdminDashboard() {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-black">
       {/* Header */}
-      <header className="bg-white dark:bg-gray-900 border-b border-slate-200 dark:border-gray-800 sticky top-0 z-50">
+      <header className="bg-white dark:bg-black border-b border-slate-200 dark:border-gray-800 sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <SmartCBTLogo />
@@ -169,7 +169,7 @@ export default function AdminDashboard() {
 
         {/* Key Metrics */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-6 md:mb-8">
-          <Card className="dark:bg-gray-900 dark:border-gray-800">
+          <Card className="dark:bg-black dark:border-gray-800">
             <CardContent className="p-4 md:p-6">
               <div className="flex items-center justify-between">
                 <div className="min-w-0 flex-1">
@@ -190,7 +190,7 @@ export default function AdminDashboard() {
             </CardContent>
           </Card>
 
-          <Card className="dark:bg-gray-900 dark:border-gray-800">
+          <Card className="dark:bg-black dark:border-gray-800">
             <CardContent className="p-4 md:p-6">
               <div className="flex items-center justify-between">
                 <div className="min-w-0 flex-1">
@@ -209,7 +209,7 @@ export default function AdminDashboard() {
             </CardContent>
           </Card>
 
-          <Card className="dark:bg-gray-900 dark:border-gray-800">
+          <Card className="dark:bg-black dark:border-gray-800">
             <CardContent className="p-4 md:p-6">
               <div className="flex items-center justify-between">
                 <div className="min-w-0 flex-1">
@@ -230,7 +230,7 @@ export default function AdminDashboard() {
             </CardContent>
           </Card>
 
-          <Card className="dark:bg-gray-900 dark:border-gray-800">
+          <Card className="dark:bg-black dark:border-gray-800">
             <CardContent className="p-4 md:p-6">
               <div className="flex items-center justify-between">
                 <div className="min-w-0 flex-1">
@@ -289,7 +289,7 @@ export default function AdminDashboard() {
           <TabsContent value="exams" className="space-y-4 md:space-y-6">
             <div className="grid lg:grid-cols-3 gap-4 md:gap-6">
               <div className="lg:col-span-2">
-                <Card className="dark:bg-gray-900 dark:border-gray-800">
+                <Card className="dark:bg-black dark:border-gray-800">
                   <CardHeader>
                     <CardTitle className="flex items-center justify-between text-slate-800 dark:text-white">
                       <span className="text-base md:text-lg">
@@ -416,7 +416,7 @@ export default function AdminDashboard() {
 
               {/* System Health */}
               <div className="space-y-4 md:space-y-6">
-                <Card className="dark:bg-gray-900 dark:border-gray-800">
+                <Card className="dark:bg-black dark:border-gray-800">
                   <CardHeader>
                     <CardTitle className="text-slate-800 dark:text-white text-base md:text-lg">
                       System Health
@@ -484,7 +484,7 @@ export default function AdminDashboard() {
                   </CardContent>
                 </Card>
 
-                <Card className="dark:bg-gray-900 dark:border-gray-800">
+                <Card className="dark:bg-black dark:border-gray-800">
                   <CardHeader>
                     <CardTitle className="text-slate-800 dark:text-white text-base md:text-lg">
                       Quick Actions
@@ -543,7 +543,7 @@ export default function AdminDashboard() {
 
           {/* Other tabs content would go here */}
           <TabsContent value="candidates">
-            <Card className="dark:bg-gray-900 dark:border-gray-800">
+            <Card className="dark:bg-black dark:border-gray-800">
               <CardHeader>
                 <CardTitle className="text-slate-800 dark:text-white">
                   Candidate Management
@@ -561,7 +561,7 @@ export default function AdminDashboard() {
           </TabsContent>
 
           <TabsContent value="content">
-            <Card className="dark:bg-gray-900 dark:border-gray-800">
+            <Card className="dark:bg-black dark:border-gray-800">
               <CardHeader>
                 <CardTitle className="text-slate-800 dark:text-white">
                   Content Management
@@ -579,7 +579,7 @@ export default function AdminDashboard() {
           </TabsContent>
 
           <TabsContent value="analytics">
-            <Card className="dark:bg-gray-900 dark:border-gray-800">
+            <Card className="dark:bg-black dark:border-gray-800">
               <CardHeader>
                 <CardTitle className="text-slate-800 dark:text-white">
                   Analytics & Reports
@@ -597,7 +597,7 @@ export default function AdminDashboard() {
           </TabsContent>
 
           <TabsContent value="security">
-            <Card className="dark:bg-gray-900 dark:border-gray-800">
+            <Card className="dark:bg-black dark:border-gray-800">
               <CardHeader>
                 <CardTitle className="text-slate-800 dark:text-white">
                   Security Monitoring
