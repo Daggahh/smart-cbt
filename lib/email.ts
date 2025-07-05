@@ -15,6 +15,19 @@ export async function sendEmail({ to, subject, html }: SendEmailOptions) {
   if (!RESEND_API_KEY) {
     throw new Error("RESEND_API_KEY is not set in environment variables");
   }
+
+  // In development, log the email instead of sending if it's not to a verified domain
+  if (process.env.NODE_ENV === "development") {
+    console.log("📧 [DEV MODE] Email would be sent:");
+    console.log("To:", to);
+    console.log("Subject:", subject);
+    console.log("Content:", html);
+    console.log(
+      "Note: In development, emails are logged instead of sent to avoid Resend restrictions"
+    );
+    return { id: "dev-mode", message: "Email logged in development mode" };
+  }
+
   const res = await fetch(RESEND_API_URL, {
     method: "POST",
     headers: {
@@ -28,6 +41,7 @@ export async function sendEmail({ to, subject, html }: SendEmailOptions) {
       html,
     }),
   });
+
   if (!res.ok) {
     const error = await res.text();
     throw new Error(`Failed to send email: ${error}`);

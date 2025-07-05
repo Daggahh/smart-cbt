@@ -7,9 +7,16 @@ import { cn } from "@/lib/utils";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { authAPI } from "@/lib/api";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, CalendarIcon } from "lucide-react";
 import { signIn } from "next-auth/react";
 import { toast } from "sonner";
+import { format } from "date-fns";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 type FormType =
   | "login"
@@ -30,7 +37,7 @@ export default function StudentAuthForm({ formType }: StudentAuthFormProps) {
     firstName: "",
     lastName: "",
     phone: "",
-    dateOfBirth: "",
+    dateOfBirth: undefined as Date | undefined,
     registrationNumber: "",
   });
   const [error, setError] = useState("");
@@ -46,20 +53,33 @@ export default function StudentAuthForm({ formType }: StudentAuthFormProps) {
     });
   };
 
+  const handleDateChange = (date: Date | undefined) => {
+    setFormData({
+      ...formData,
+      dateOfBirth: date,
+    });
+  };
+
   const validateForm = () => {
     if (formType === "signup" || formType === "reset-password") {
       if (formData.password !== formData.confirmPassword) {
-        setError("Passwords do not match");
+        const errorMessage = "Passwords do not match";
+        setError(errorMessage);
+        toast.error(errorMessage);
         return false;
       }
       if (formData.password.length < 8) {
-        setError("Password must be at least 8 characters long");
+        const errorMessage = "Password must be at least 8 characters long";
+        setError(errorMessage);
+        toast.error(errorMessage);
         return false;
       }
     }
     if (formType === "signup") {
       if (!formData.email || !formData.firstName || !formData.lastName) {
-        setError("Please fill in all required fields");
+        const errorMessage = "Please fill in all required fields";
+        setError(errorMessage);
+        toast.error(errorMessage);
         return false;
       }
     }
@@ -74,14 +94,22 @@ export default function StudentAuthForm({ formType }: StudentAuthFormProps) {
 
     if (!validateForm()) {
       setLoading(false);
-      if (error) toast.error(error);
       return;
     }
 
     try {
       let response;
+      // Convert date to ISO string for API
+      const submitData = {
+        ...formData,
+        dateOfBirth: formData.dateOfBirth
+          ? formData.dateOfBirth.toISOString()
+          : undefined,
+      };
+
       switch (formType) {
         case "login":
+          toast.loading("Signing in...");
           await signIn("credentials", {
             email: formData.email,
             password: formData.password,
@@ -90,74 +118,107 @@ export default function StudentAuthForm({ formType }: StudentAuthFormProps) {
           });
           break;
         case "signup":
-          const { confirmPassword, ...signupData } = formData;
+          const { confirmPassword, ...signupData } = submitData;
+          console.log("Sending signup request with data:", signupData);
+          toast.loading("Creating your account...");
           response = await authAPI.signup(signupData);
+          console.log("Signup response:", response);
+          toast.dismiss();
+
           if (response.success) {
-            setSuccess(
-              "Account created successfully! Please check your email to verify your account."
-            );
+            const successMessage =
+              "Account created successfully! Please check your email to verify your account.";
+            setSuccess(successMessage);
+            toast.success(successMessage, {
+              duration: 5000,
+              description: "You'll be redirected to login in 3 seconds",
+            });
             setTimeout(() => {
               router.push("/auth/student/login");
             }, 3000);
           } else {
-            setError(response.error || "Signup failed");
-            toast.error(response.error || "Signup failed");
+            const errorMessage = response.error || "Signup failed";
+            setError(errorMessage);
+            toast.error(errorMessage, {
+              duration: 4000,
+            });
           }
           break;
         case "forgot-password":
+          toast.loading("Sending reset instructions...");
           response = await authAPI.forgotPassword({ email: formData.email });
+          toast.dismiss();
+
           if (response.success) {
-            setSuccess(
-              "Password reset instructions have been sent to your email address."
-            );
+            const successMessage =
+              "Password reset instructions have been sent to your email address.";
+            setSuccess(successMessage);
+            toast.success(successMessage);
             setFormData({ ...formData, email: "" });
           } else {
-            setError(response.error || "Failed to send reset email");
-            toast.error(response.error || "Failed to send reset email");
+            const errorMessage = response.error || "Failed to send reset email";
+            setError(errorMessage);
+            toast.error(errorMessage);
           }
           break;
         case "reset-password":
           const token = searchParams.get("token");
           if (!token) {
-            setError("Invalid or missing reset token");
-            toast.error("Invalid or missing reset token");
+            const errorMessage = "Invalid or missing reset token";
+            setError(errorMessage);
+            toast.error(errorMessage);
             break;
           }
+          toast.loading("Resetting your password...");
           response = await authAPI.resetPassword({
             token,
             password: formData.password,
           });
+          toast.dismiss();
+
           if (response.success) {
-            setSuccess("Password reset successfully! Redirecting to login...");
+            const successMessage =
+              "Password reset successfully! Redirecting to login...";
+            setSuccess(successMessage);
+            toast.success(successMessage);
             setTimeout(() => {
               router.push("/auth/student/login");
             }, 2000);
           } else {
-            setError(response.error || "Failed to reset password");
-            toast.error(response.error || "Failed to reset password");
+            const errorMessage = response.error || "Failed to reset password";
+            setError(errorMessage);
+            toast.error(errorMessage);
           }
           break;
         case "verify-email":
           const verifyToken = searchParams.get("token");
           if (!verifyToken) {
-            setError("Invalid or missing verification token");
-            toast.error("Invalid or missing verification token");
+            const errorMessage = "Invalid or missing verification token";
+            setError(errorMessage);
+            toast.error(errorMessage);
             break;
           }
+          toast.loading("Verifying your email...");
           response = await authAPI.verifyEmail({ token: verifyToken });
+          toast.dismiss();
+
           if (response.success) {
-            setSuccess(
-              "Email verified successfully! You can now log in to your account."
-            );
+            const successMessage =
+              "Email verified successfully! You can now log in to your account.";
+            setSuccess(successMessage);
+            toast.success(successMessage);
           } else {
-            setError(response.error || "Failed to verify email");
-            toast.error(response.error || "Failed to verify email");
+            const errorMessage = response.error || "Failed to verify email";
+            setError(errorMessage);
+            toast.error(errorMessage);
           }
           break;
       }
     } catch (error) {
-      setError("An error occurred. Please try again.");
-      toast.error("An error occurred. Please try again.");
+      console.error("Form submission error:", error);
+      const errorMessage = "An error occurred. Please try again.";
+      setError(errorMessage);
+      toast.error(errorMessage);
     }
 
     setLoading(false);
@@ -291,13 +352,36 @@ export default function StudentAuthForm({ formType }: StudentAuthFormProps) {
             </LabelInputContainer>
             <LabelInputContainer className="mb-4">
               <Label htmlFor="dateOfBirth">Date of Birth (optional)</Label>
-              <Input
-                id="dateOfBirth"
-                name="dateOfBirth"
-                type="date"
-                value={formData.dateOfBirth}
-                onChange={handleChange}
-              />
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant={"outline"}
+                    className={cn(
+                      "w-full pl-3 text-left font-normal",
+                      !formData.dateOfBirth && "text-muted-foreground"
+                    )}
+                  >
+                    {formData.dateOfBirth ? (
+                      format(formData.dateOfBirth, "PPP")
+                    ) : (
+                      <span>Pick a date</span>
+                    )}
+                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={formData.dateOfBirth}
+                    onSelect={(date) => handleDateChange(date)}
+                    disabled={(date) =>
+                      date > new Date() || date < new Date("1900-01-01")
+                    }
+                    captionLayout="dropdown"
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
             </LabelInputContainer>
             <LabelInputContainer className="mb-4">
               <Label htmlFor="registrationNumber">
@@ -409,6 +493,33 @@ export default function StudentAuthForm({ formType }: StudentAuthFormProps) {
               >
                 Sign up
               </Link>
+            </div>
+            <div className="text-sm text-neutral-600 dark:text-neutral-400">
+              Need to verify your email?{" "}
+              <button
+                type="button"
+                onClick={async () => {
+                  if (!formData.email) {
+                    toast.error("Please enter your email first");
+                    return;
+                  }
+                  toast.loading("Sending verification email...");
+                  const response = await authAPI.resendVerification(
+                    formData.email
+                  );
+                  toast.dismiss();
+                  if (response.success) {
+                    toast.success("Verification email sent! Check your inbox.");
+                  } else {
+                    toast.error(
+                      response.error || "Failed to send verification email"
+                    );
+                  }
+                }}
+                className="text-blue-600 dark:text-blue-400 hover:underline"
+              >
+                Resend verification
+              </button>
             </div>
           </div>
         );
@@ -526,6 +637,27 @@ export default function StudentAuthForm({ formType }: StudentAuthFormProps) {
       <p className="mt-2 max-w-sm mx-auto text-base text-center text-neutral-600 dark:text-neutral-300 mb-4">
         {config.subtitle}
       </p>
+
+      {formType === "signup" && process.env.NODE_ENV === "development" && (
+        <div className="mb-4 p-3 bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+          <p className="text-sm text-blue-700 dark:text-blue-300">
+            <strong>Development Mode:</strong> Verification emails are logged to
+            the console instead of being sent. Check the server logs for the
+            email content.
+          </p>
+        </div>
+      )}
+
+      {formType === "forgot-password" &&
+        process.env.NODE_ENV === "development" && (
+          <div className="mb-4 p-3 bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+            <p className="text-sm text-blue-700 dark:text-blue-300">
+              <strong>Development Mode:</strong> Password reset emails are
+              logged to the console instead of being sent. Check the server logs
+              for the reset link.
+            </p>
+          </div>
+        )}
 
       <form className="my-8" onSubmit={handleSubmit}>
         {renderFormFields()}

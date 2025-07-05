@@ -114,20 +114,29 @@ export async function POST(request: NextRequest) {
 
       // Store verification token
       await client.query(
-        `INSERT INTO verification_tokens (user_id, token, expires_at) VALUES ($1, $2, $3)`,
-        [userId, verificationToken, expiresAt]
+        `INSERT INTO verification_tokens (identifier, token, expires) VALUES ($1, $2, $3)`,
+        [email, verificationToken, expiresAt]
       );
 
       // Send verification email
       const verifyUrl = `${
         process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
       }/auth/student/verify-email?token=${verificationToken}`;
-      await sendEmail({
-        to: email,
-        subject: "Verify your Smart CBT account",
-        html: `<p>Hello ${firstName},</p><p>Thank you for signing up. Please verify your email by clicking the link below:</p><p><a href="${verifyUrl}">Verify Email</a></p><p>If you did not sign up, you can ignore this email.</p>`,
-      });
 
+      try {
+        await sendEmail({
+          to: email,
+          subject: "Verify your Smart CBT account",
+          html: `<p>Hello ${firstName},</p><p>Thank you for signing up. Please verify your email by clicking the link below:</p><p><a href="${verifyUrl}">Verify Email</a></p><p>If you did not sign up, you can ignore this email.</p>`,
+        });
+        console.log("✅ Verification email sent successfully to:", email);
+      } catch (emailError) {
+        console.error("❌ Failed to send verification email:", emailError);
+        // Don't fail the signup if email fails, just log it
+        // In development, this is expected behavior
+      }
+
+      console.log("✅ Signup successful for user:", { email, userId });
       return NextResponse.json(
         {
           message:

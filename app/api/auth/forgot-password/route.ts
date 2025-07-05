@@ -60,12 +60,24 @@ export async function POST(request: NextRequest) {
       const resetUrl = `${
         process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
       }/auth/student/reset-password?token=${resetToken}`;
-      await sendEmail({
-        to: email,
-        subject: "Reset your Smart CBT password",
-        html: `<p>Hello ${user.first_name},</p><p>You requested a password reset. Click the link below to reset your password:</p><p><a href="${resetUrl}">Reset Password</a></p><p>If you did not request this, you can ignore this email.</p>`,
-      });
 
+      try {
+        await sendEmail({
+          to: email,
+          subject: "Reset your Smart CBT password",
+          html: `<p>Hello ${user.first_name},</p><p>You requested a password reset. Click the link below to reset your password:</p><p><a href="${resetUrl}">Reset Password</a></p><p>If you did not request this, you can ignore this email.</p>`,
+        });
+        console.log("✅ Password reset email sent successfully to:", email);
+      } catch (emailError) {
+        console.error("❌ Failed to send password reset email:", emailError);
+        // Don't fail the request if email fails, just log it
+        // In development, this is expected behavior
+      }
+
+      console.log("✅ Password reset token generated for user:", {
+        email,
+        userId: user.id,
+      });
       return NextResponse.json(
         {
           message:

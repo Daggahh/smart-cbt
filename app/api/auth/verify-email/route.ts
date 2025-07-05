@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
     try {
       // Validate token from DB
       const tokenResult = await client.query(
-        `SELECT user_id, expires_at, used FROM verification_tokens WHERE token = $1`,
+        `SELECT identifier, expires FROM verification_tokens WHERE token = $1`,
         [token]
       );
       if (tokenResult.rows.length === 0) {
@@ -32,8 +32,8 @@ export async function POST(request: NextRequest) {
           { status: 400 }
         );
       }
-      const { user_id, expires_at, used } = tokenResult.rows[0];
-      if (used || new Date() > new Date(expires_at)) {
+      const { identifier, expires } = tokenResult.rows[0];
+      if (new Date() > new Date(expires)) {
         return NextResponse.json(
           { error: "Invalid or expired verification token" },
           { status: 400 }
@@ -42,14 +42,13 @@ export async function POST(request: NextRequest) {
 
       // Update user email verification status
       await client.query(
-        "UPDATE users SET email_verified = true, updated_at = CURRENT_TIMESTAMP WHERE id = $1",
-        [user_id]
+        "UPDATE users SET email_verified = true, updated_at = CURRENT_TIMESTAMP WHERE email = $1",
+        [identifier]
       );
-      // Mark token as used
-      await client.query(
-        "UPDATE verification_tokens SET used = true WHERE token = $1",
-        [token]
-      );
+      // Delete the used token
+      await client.query("DELETE FROM verification_tokens WHERE token = $1", [
+        token,
+      ]);
 
       return NextResponse.json(
         { message: "Email verified successfully" },
