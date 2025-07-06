@@ -23,9 +23,6 @@ import {
   AlertTriangle,
   Clock,
   FileText,
-  Database,
-  Zap,
-  Activity,
   XCircle,
 } from "lucide-react";
 import Link from "next/link";
@@ -34,7 +31,6 @@ import { adminAPI } from "@/lib/api";
 import {
   getStatusColor,
   getHealthColor,
-  generateMockSystemStats,
   generateMockSystemHealth,
   generateMockExams,
   getSystemHealthStatus,
@@ -105,10 +101,18 @@ export default function AdminDashboard() {
 
   const fetchDashboardData = async () => {
     try {
-      // For now, simulate API call with realistic data
-      // TODO: Replace with actual API calls
-      const mockData = generateMockSystemStats();
-      setSystemStats(mockData);
+      setLoading(true);
+      const res = await adminAPI.getDashboard();
+      if (res.success && res.data) {
+        setSystemStats(res.data);
+      } else {
+        setSystemStats({
+          totalCandidates: 0,
+          activeExams: 0,
+          completedToday: 0,
+          systemUptime: 0,
+        });
+      }
 
       const mockExams = generateMockExams();
       setRecentExams(mockExams);
@@ -238,10 +242,10 @@ export default function AdminDashboard() {
                   <p className="text-lg md:text-2xl font-bold text-slate-800 dark:text-white">
                     {loading
                       ? "..."
-                      : systemStats.totalCandidates.toLocaleString()}
+                      : (systemStats.totalCandidates || 0).toLocaleString()}
                   </p>
                   <p className="text-xs text-green-600 dark:text-green-400 mt-1">
-                    +12% from last month
+                    Registered candidates
                   </p>
                 </div>
                 <Users className="w-6 h-6 md:w-8 md:h-8 text-blue-600 dark:text-blue-400 flex-shrink-0" />
@@ -257,10 +261,10 @@ export default function AdminDashboard() {
                     Active Exams
                   </p>
                   <p className="text-lg md:text-2xl font-bold text-slate-800 dark:text-white">
-                    {loading ? "..." : systemStats.activeExams}
+                    {loading ? "..." : systemStats.activeExams || 0}
                   </p>
                   <p className="text-xs text-blue-600 dark:text-blue-400 mt-1">
-                    Live monitoring
+                    Currently running
                   </p>
                 </div>
                 <Calendar className="w-6 h-6 md:w-8 md:h-8 text-green-600 dark:text-green-400 flex-shrink-0" />
@@ -278,10 +282,10 @@ export default function AdminDashboard() {
                   <p className="text-lg md:text-2xl font-bold text-slate-800 dark:text-white">
                     {loading
                       ? "..."
-                      : systemStats.completedToday.toLocaleString()}
+                      : (systemStats.completedToday || 0).toLocaleString()}
                   </p>
                   <p className="text-xs text-orange-600 dark:text-orange-400 mt-1">
-                    Peak: 2:00 PM
+                    Today's completions
                   </p>
                 </div>
                 <CheckCircle className="w-6 h-6 md:w-8 md:h-8 text-orange-600 dark:text-orange-400 flex-shrink-0" />
@@ -297,7 +301,7 @@ export default function AdminDashboard() {
                     System Uptime
                   </p>
                   <p className="text-lg md:text-2xl font-bold text-slate-800 dark:text-white">
-                    {loading ? "..." : systemStats.systemUptime}%
+                    {loading ? "..." : systemStats.systemUptime || 0}%
                   </p>
                   <p className="text-xs text-green-600 dark:text-green-400 mt-1">
                     Last 30 days

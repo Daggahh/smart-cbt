@@ -188,7 +188,7 @@ export const studentAPI = {
 
 // Admin-specific API functions
 export const adminAPI = {
-  // Get admin dashboard data
+  // Get admin dashboard data (key metrics)
   async getDashboard(): Promise<ApiResponse<any>> {
     return apiCall("/api/admin/dashboard", {
       method: "GET",

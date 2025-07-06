@@ -31,14 +31,6 @@ export const getHealthColor = (value: number, type: string) => {
   return "text-slate-600 dark:text-gray-400";
 };
 
-// Mock data generators for development
-export const generateMockSystemStats = () => ({
-  totalCandidates: 2847,
-  activeExams: 2,
-  completedToday: 128,
-  systemUptime: 99.97,
-});
-
 export const generateMockSystemHealth = () => ({
   serverLoad: Math.floor(Math.random() * 30) + 10, // 10-40%
   databasePerformance: Math.floor(Math.random() * 20) + 80, // 80-100%
@@ -77,7 +69,18 @@ export const generateMockExams = () => [
 ];
 
 // Uptime calculation utility
-export function calculateUptime(startTime: Date): number {
+export function calculateUptime(startTimeInput?: string | Date): number {
+  let startTime: Date;
+  if (startTimeInput instanceof Date) {
+    startTime = startTimeInput;
+  } else if (typeof startTimeInput === "string") {
+    startTime = new Date(startTimeInput);
+  } else if (typeof process !== "undefined" && process.env.SYSTEM_START_TIME) {
+    startTime = new Date(process.env.SYSTEM_START_TIME);
+  } else {
+    // Fallback: use server start time (now)
+    startTime = new Date();
+  }
   const now = new Date();
   const diffInMs = now.getTime() - startTime.getTime();
   const diffInHours = diffInMs / (1000 * 60 * 60);
@@ -85,6 +88,11 @@ export function calculateUptime(startTime: Date): number {
   const uptimePercentage = Math.max(0, 100 - (diffInHours / totalHours) * 100);
   // Ensure it doesn't go below 99.5% for demo/demo purposes
   return Math.max(99.5, uptimePercentage);
+}
+
+// Server-side utility to get system uptime from env
+export function getSystemUptime(): number {
+  return calculateUptime(process.env.SYSTEM_START_TIME);
 }
 
 // System health fetch utility

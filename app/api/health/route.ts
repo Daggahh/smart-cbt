@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { Pool } from "pg";
+import { getSystemUptime } from "@/lib/admin-utils";
 
 // Database connection
 const pool = new Pool({
@@ -54,7 +55,7 @@ export async function GET() {
         auth_configured: envStatus.nextauth,
       },
       version: "0.1.0",
-      uptime: 99.97,
+      uptime: getSystemUptime(),
       message: isDevelopment
         ? "Smart CBT is running in development mode"
         : "Smart CBT is operational",
