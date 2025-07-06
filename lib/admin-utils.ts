@@ -100,3 +100,12 @@ export async function getSystemHealthStatus(): Promise<any> {
     };
   }
 }
+
+// Utility to format role slugs to human-readable form
+export function formatRole(role: string): string {
+  if (!role) return "";
+  return role
+    .split("_")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+}

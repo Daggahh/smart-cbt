@@ -229,6 +229,13 @@ export const adminAPI = {
       method: "POST",
     });
   },
+
+  // Demote super_admin to admin (super_admin only)
+  async demoteAdmin(adminId: string): Promise<ApiResponse<any>> {
+    return apiCall(`/api/admin/admins/${adminId}/demote`, {
+      method: "POST",
+    });
+  },
 };
 
 // Utility function to set auth token in cookies

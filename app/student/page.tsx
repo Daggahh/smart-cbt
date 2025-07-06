@@ -21,7 +21,6 @@ import {
 import Link from "next/link";
 import { SmartCBTLogo } from "@/components/smart-cbt-logo";
 
-
 export default function StudentDashboard() {
   const upcomingExams = [
     {

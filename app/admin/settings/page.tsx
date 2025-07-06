@@ -12,6 +12,14 @@ import { Button } from "@/components/ui/button";
 import { SmartCBTLogo } from "@/components/smart-cbt-logo";
 import { authAPI, adminAPI } from "@/lib/api";
 import { LogOut, Settings, ArrowLeft, User, Shield } from "lucide-react";
+import { toast } from "sonner";
+import { formatRole } from "@/lib/admin-utils";
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+  TooltipProvider,
+} from "@/components/ui/tooltip";
 
 export default function AdminSettingsPage() {
   return <AdminSettingsContent />;
@@ -23,16 +31,35 @@ function AdminSettingsContent() {
   const [error, setError] = useState("");
   const [user, setUser] = useState<any>(null);
   const [admins, setAdmins] = useState<any[]>([]);
+  const [actionLoading, setActionLoading] = useState<string | null>(null); // adminId for which action is loading
+
+  const fetchAdmins = () => {
+    adminAPI.getAdmins?.().then((res) => {
+      if (res?.success && res.data) {
+        const adminsArray = Array.isArray(res.data)
+          ? res.data
+          : Array.isArray((res.data as any).data)
+          ? (res.data as any).data
+          : [];
+        setAdmins(adminsArray);
+      } else {
+        setAdmins([]);
+      }
+    });
+  };
 
   useEffect(() => {
     // Fetch current user
     authAPI.getCurrentUser().then((res) => {
-      if (res.success) setUser(res.data);
+      if (res.success && res.data) {
+        const userData = (res.data as any).data
+          ? (res.data as any).data
+          : res.data;
+        setUser(userData);
+      }
     });
     // Fetch all admins if super_admin
-    adminAPI.getAdmins?.().then((res) => {
-      if (res?.success) setAdmins(res.data);
-    });
+    fetchAdmins();
   }, []);
 
   const handleLogout = async () => {
@@ -48,14 +75,45 @@ function AdminSettingsContent() {
   };
 
   const handleRevoke = async (adminId: string) => {
-    // Placeholder for revoke logic
-    alert(`Revoke admin: ${adminId}`);
+    setActionLoading(adminId);
+    const res = await adminAPI.revokeAdmin(adminId);
+    setActionLoading(null);
+    if (res.success) {
+      toast.success("Admin rights revoked successfully.");
+      fetchAdmins();
+    } else {
+      toast.error(res.error || "Failed to revoke admin rights.");
+    }
   };
 
   const handlePromote = async (adminId: string) => {
-    // Placeholder for promote logic
-    alert(`Promote admin: ${adminId}`);
+    setActionLoading(adminId);
+    const res = await adminAPI.promoteAdmin(adminId);
+    setActionLoading(null);
+    if (res.success) {
+      toast.success("Admin promoted to super admin successfully.");
+      fetchAdmins();
+    } else {
+      toast.error(res.error || "Failed to promote admin.");
+    }
   };
+
+  const handleDemote = async (adminId: string) => {
+    setActionLoading(adminId);
+    const res = await adminAPI.demoteAdmin(adminId);
+    setActionLoading(null);
+    if (res.success) {
+      toast.success("Admin demoted to admin successfully.");
+      fetchAdmins();
+    } else {
+      toast.error(res.error || "Failed to demote admin.");
+    }
+  };
+
+  // Filter out the current user from the admins list
+  const filteredAdmins = user
+    ? admins.filter((admin) => admin.id !== user.id)
+    : admins;
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-black flex flex-col px-4 py-8">
@@ -94,7 +152,10 @@ function AdminSettingsContent() {
                     {user.email}
                   </div>
                   <div className="text-xs mt-1 px-2 py-1 rounded bg-gray-100 dark:bg-gray-800 inline-block">
-                    Role: <span className="font-semibold">{user.role}</span>
+                    Role:{" "}
+                    <span className="font-semibold">
+                      {formatRole(user.role)}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -113,62 +174,107 @@ function AdminSettingsContent() {
         </Card>
         {/* Super Admin Controls */}
         {user?.role === "super_admin" && (
-          <Card className="dark:bg-black dark:border-gray-800">
-            <CardHeader>
-              <CardTitle className="flex items-center space-x-2 text-slate-800 dark:text-white">
-                <Shield className="w-5 h-5" />
-                <span>Admin Management</span>
-              </CardTitle>
-              <CardDescription className="text-slate-600 dark:text-gray-400">
-                View and manage all platform admins
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {admins.length === 0 ? (
-                <div className="text-slate-600 dark:text-gray-400">
-                  No other admins found.
-                </div>
-              ) : (
-                admins.map((admin) => (
-                  <div
-                    key={admin.id}
-                    className="flex items-center justify-between border-b border-slate-200 dark:border-gray-800 py-2"
-                  >
-                    <div>
-                      <div className="font-medium text-slate-800 dark:text-white">
-                        {admin.firstName} {admin.lastName}
-                      </div>
-                      <div className="text-xs text-slate-600 dark:text-gray-400">
-                        {admin.email}
-                      </div>
-                      <div className="text-xs mt-1 px-2 py-1 rounded bg-gray-100 dark:bg-gray-800 inline-block">
-                        Role:{" "}
-                        <span className="font-semibold">{admin.role}</span>
-                      </div>
-                    </div>
-                    <div className="flex space-x-2">
-                      {admin.role === "admin" && (
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => handlePromote(admin.id)}
-                        >
-                          Promote to Super
-                        </Button>
-                      )}
-                      <Button
-                        size="sm"
-                        variant="destructive"
-                        onClick={() => handleRevoke(admin.id)}
-                      >
-                        Revoke
-                      </Button>
-                    </div>
+          <TooltipProvider>
+            <Card className="dark:bg-black dark:border-gray-800">
+              <CardHeader>
+                <CardTitle className="flex items-center space-x-2 text-slate-800 dark:text-white">
+                  <Shield className="w-5 h-5" />
+                  <span>Admin Management</span>
+                </CardTitle>
+                <CardDescription className="text-slate-600 dark:text-gray-400">
+                  View and manage all platform admins
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {filteredAdmins.length === 0 ? (
+                  <div className="text-slate-600 dark:text-gray-400">
+                    No other admins found.
                   </div>
-                ))
-              )}
-            </CardContent>
-          </Card>
+                ) : (
+                  filteredAdmins.map((admin) => (
+                    <div
+                      key={admin.id}
+                      className="flex items-center justify-between border-b border-slate-200 dark:border-gray-800 py-2"
+                    >
+                      <div>
+                        <div className="font-medium text-slate-800 dark:text-white">
+                          {admin.firstName} {admin.lastName}
+                        </div>
+                        <div className="text-xs text-slate-600 dark:text-gray-400">
+                          {admin.email}
+                        </div>
+                        <div className="text-xs mt-1 px-2 py-1 rounded bg-gray-100 dark:bg-gray-800 inline-block">
+                          Role:{" "}
+                          <span className="font-semibold">
+                            {formatRole(admin.role)}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="flex space-x-2">
+                        {admin.role === "admin" && (
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => handlePromote(admin.id)}
+                                disabled={actionLoading === admin.id}
+                              >
+                                {actionLoading === admin.id
+                                  ? "Promoting..."
+                                  : "Promote to SA"}
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              Promote this admin to Super Admin (full platform
+                              access)
+                            </TooltipContent>
+                          </Tooltip>
+                        )}
+                        {admin.role === "super_admin" && (
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => handleDemote(admin.id)}
+                                disabled={actionLoading === admin.id}
+                              >
+                                {actionLoading === admin.id
+                                  ? "Demoting..."
+                                  : "Demote"}
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              Demote this Super Admin to Admin (removes full
+                              platform access)
+                            </TooltipContent>
+                          </Tooltip>
+                        )}
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              size="sm"
+                              variant="destructive"
+                              onClick={() => handleRevoke(admin.id)}
+                              disabled={actionLoading === admin.id}
+                            >
+                              {actionLoading === admin.id
+                                ? "Revoking..."
+                                : "Revoke"}
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            Revoke all admin rights (user becomes a student)
+                          </TooltipContent>
+                        </Tooltip>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </CardContent>
+            </Card>
+          </TooltipProvider>
         )}
       </div>
     </div>
