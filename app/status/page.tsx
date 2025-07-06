@@ -24,6 +24,7 @@ import {
   Cloud,
 } from "lucide-react";
 import { SmartCBTLogo } from "@/components/smart-cbt-logo";
+import { calculateUptime, getSystemHealthStatus } from "@/lib/admin-utils";
 
 export default function StatusPage() {
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -39,55 +40,21 @@ export default function StatusPage() {
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentTime(new Date());
-      calculateUptime();
+      setUptime(calculateUptime(startTime));
     }, 1000);
 
     checkSystemHealth();
     return () => clearInterval(timer);
   }, []);
 
-  const calculateUptime = () => {
-    const now = new Date();
-    const diffInMs = now.getTime() - startTime.getTime();
-    const diffInHours = diffInMs / (1000 * 60 * 60);
-
-    // Calculate uptime percentage (assuming 30 days = 720 hours)
-    const totalHours = 30 * 24; // 30 days
-    const uptimePercentage = Math.max(
-      0,
-      100 - (diffInHours / totalHours) * 100
-    );
-
-    // Ensure it doesn't go below 99.5% for demo purposes
-    setUptime(Math.max(99.5, uptimePercentage));
-  };
-
   const checkSystemHealth = async () => {
-    try {
-      // Check API health
-      const apiResponse = await fetch("/api/health", {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      });
-
-      setSystemHealth((prev) => ({
-        ...prev,
-        api: apiResponse.ok ? "operational" : "degraded",
-      }));
-    } catch (error) {
-      setSystemHealth((prev) => ({
-        ...prev,
-        api: "outage",
-      }));
-    }
-
-    // For development, assume database and auth are operational
-    setSystemHealth((prev) => ({
-      ...prev,
-      database: "operational",
-      auth: "operational",
-    }));
-
+    setLoading(true);
+    const health = await getSystemHealthStatus();
+    setSystemHealth({
+      database: health.services?.database || "checking",
+      api: health.services?.api || "checking",
+      auth: health.services?.auth || "checking",
+    });
     setLoading(false);
   };
 

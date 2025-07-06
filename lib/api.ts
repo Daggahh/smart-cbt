@@ -208,6 +208,27 @@ export const adminAPI = {
       method: "GET",
     });
   },
+
+  // Get all admins (super_admin only)
+  async getAdmins(): Promise<ApiResponse<any>> {
+    return apiCall("/api/admin/admins", {
+      method: "GET",
+    });
+  },
+
+  // Revoke admin rights (super_admin only)
+  async revokeAdmin(adminId: string): Promise<ApiResponse<any>> {
+    return apiCall(`/api/admin/admins/${adminId}/revoke`, {
+      method: "POST",
+    });
+  },
+
+  // Promote admin to super_admin (super_admin only)
+  async promoteAdmin(adminId: string): Promise<ApiResponse<any>> {
+    return apiCall(`/api/admin/admins/${adminId}/promote`, {
+      method: "POST",
+    });
+  },
 };
 
 // Utility function to set auth token in cookies

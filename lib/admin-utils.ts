@@ -75,3 +75,28 @@ export const generateMockExams = () => [
     endTime: "01:00 PM",
   },
 ];
+
+// Uptime calculation utility
+export function calculateUptime(startTime: Date): number {
+  const now = new Date();
+  const diffInMs = now.getTime() - startTime.getTime();
+  const diffInHours = diffInMs / (1000 * 60 * 60);
+  const totalHours = 30 * 24; // 30 days
+  const uptimePercentage = Math.max(0, 100 - (diffInHours / totalHours) * 100);
+  // Ensure it doesn't go below 99.5% for demo/demo purposes
+  return Math.max(99.5, uptimePercentage);
+}
+
+// System health fetch utility
+export async function getSystemHealthStatus(): Promise<any> {
+  try {
+    const res = await fetch("/api/health", { method: "GET" });
+    if (!res.ok) throw new Error("Health check failed");
+    return await res.json();
+  } catch (e) {
+    return {
+      status: "outage",
+      error: e instanceof Error ? e.message : "Unknown error",
+    };
+  }
+}

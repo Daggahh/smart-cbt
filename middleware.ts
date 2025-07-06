@@ -38,7 +38,7 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Allow public routes
-  if (publicRoutes.some((route) => pathname.startsWith(route))) {
+  if (pathname === "/" || publicRoutes.some((route) => pathname.startsWith(route))) {
     return NextResponse.next();
   }
 

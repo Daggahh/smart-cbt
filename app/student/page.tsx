@@ -1,10 +1,26 @@
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Progress } from "@/components/ui/progress"
-import { Clock, BookOpen, Award, Mail, ArrowRight, User, LogOut } from "lucide-react"
-import Link from "next/link"
-import { SmartCBTLogo } from "@/components/smart-cbt-logo"
+"use client";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import {
+  Clock,
+  BookOpen,
+  Award,
+  Mail,
+  ArrowRight,
+  User,
+  LogOut,
+} from "lucide-react";
+import Link from "next/link";
+import { SmartCBTLogo } from "@/components/smart-cbt-logo";
+
 
 export default function StudentDashboard() {
   const upcomingExams = [
@@ -26,7 +42,7 @@ export default function StudentDashboard() {
       status: "available",
       questions: 40,
     },
-  ]
+  ];
 
   const recentResults = [
     {
@@ -45,7 +61,7 @@ export default function StudentDashboard() {
       date: "2024-01-08",
       grade: "B+",
     },
-  ]
+  ];
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -76,8 +92,12 @@ export default function StudentDashboard() {
       <div className="container mx-auto px-4 py-8">
         {/* Welcome Section */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-slate-800 mb-2">Welcome back, John!</h1>
-          <p className="text-slate-600">Ready to take your next exam? Check your upcoming tests below.</p>
+          <h1 className="text-3xl font-bold text-slate-800 mb-2">
+            Welcome back, John!
+          </h1>
+          <p className="text-slate-600">
+            Ready to take your next exam? Check your upcoming tests below.
+          </p>
         </div>
 
         {/* Quick Stats */}
@@ -86,7 +106,9 @@ export default function StudentDashboard() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-slate-600">Exams Completed</p>
+                  <p className="text-sm font-medium text-slate-600">
+                    Exams Completed
+                  </p>
                   <p className="text-2xl font-bold text-slate-800">12</p>
                 </div>
                 <BookOpen className="w-8 h-8 text-blue-600" />
@@ -98,7 +120,9 @@ export default function StudentDashboard() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-slate-600">Average Score</p>
+                  <p className="text-sm font-medium text-slate-600">
+                    Average Score
+                  </p>
                   <p className="text-2xl font-bold text-slate-800">82%</p>
                 </div>
                 <Award className="w-8 h-8 text-green-600" />
@@ -110,7 +134,9 @@ export default function StudentDashboard() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-slate-600">Time Spent</p>
+                  <p className="text-sm font-medium text-slate-600">
+                    Time Spent
+                  </p>
                   <p className="text-2xl font-bold text-slate-800">24h</p>
                 </div>
                 <Clock className="w-8 h-8 text-orange-600" />
@@ -138,16 +164,31 @@ export default function StudentDashboard() {
               <CardHeader>
                 <CardTitle className="flex items-center justify-between">
                   Upcoming Exams
-                  <Badge variant="secondary">{upcomingExams.length} scheduled</Badge>
+                  <Badge variant="secondary">
+                    {upcomingExams.length} scheduled
+                  </Badge>
                 </CardTitle>
-                <CardDescription>Your scheduled examinations and practice tests</CardDescription>
+                <CardDescription>
+                  Your scheduled examinations and practice tests
+                </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 {upcomingExams.map((exam) => (
-                  <div key={exam.id} className="border rounded-lg p-4 hover:bg-slate-50 transition-colors">
+                  <div
+                    key={exam.id}
+                    className="border rounded-lg p-4 hover:bg-slate-50 transition-colors"
+                  >
                     <div className="flex items-center justify-between mb-3">
-                      <h3 className="font-semibold text-slate-800">{exam.title}</h3>
-                      <Badge variant={exam.status === "available" ? "default" : "secondary"}>{exam.status}</Badge>
+                      <h3 className="font-semibold text-slate-800">
+                        {exam.title}
+                      </h3>
+                      <Badge
+                        variant={
+                          exam.status === "available" ? "default" : "secondary"
+                        }
+                      >
+                        {exam.status}
+                      </Badge>
                     </div>
 
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-slate-600 mb-4">
@@ -170,7 +211,11 @@ export default function StudentDashboard() {
                     </div>
 
                     <div className="flex justify-end">
-                      <Button size="sm" disabled={exam.status !== "available"} asChild={exam.status === "available"}>
+                      <Button
+                        size="sm"
+                        disabled={exam.status !== "available"}
+                        asChild={exam.status === "available"}
+                      >
                         {exam.status === "available" ? (
                           <Link href={`/student/exam/${exam.id}`}>
                             Start Exam <ArrowRight className="w-4 h-4 ml-2" />
@@ -198,7 +243,9 @@ export default function StudentDashboard() {
                 {recentResults.map((result) => (
                   <div key={result.id} className="border rounded-lg p-4">
                     <div className="flex items-center justify-between mb-2">
-                      <h4 className="font-medium text-slate-800">{result.title}</h4>
+                      <h4 className="font-medium text-slate-800">
+                        {result.title}
+                      </h4>
                       <Badge variant="outline">{result.grade}</Badge>
                     </div>
 
@@ -209,13 +256,20 @@ export default function StudentDashboard() {
                       </div>
                       <Progress value={result.score} className="h-2" />
                       <p className="text-xs text-slate-500">
-                        {Math.round((result.score / 100) * result.totalQuestions)}/{result.totalQuestions} correct
+                        {Math.round(
+                          (result.score / 100) * result.totalQuestions
+                        )}
+                        /{result.totalQuestions} correct
                       </p>
                     </div>
                   </div>
                 ))}
 
-                <Button variant="outline" className="w-full bg-transparent" asChild>
+                <Button
+                  variant="outline"
+                  className="w-full bg-transparent"
+                  asChild
+                >
                   <Link href="/student/results">View All Results</Link>
                 </Button>
               </CardContent>
@@ -225,7 +279,9 @@ export default function StudentDashboard() {
             <Card>
               <CardHeader>
                 <CardTitle>Performance Overview</CardTitle>
-                <CardDescription>Your strengths and areas for improvement</CardDescription>
+                <CardDescription>
+                  Your strengths and areas for improvement
+                </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
@@ -265,5 +321,5 @@ export default function StudentDashboard() {
         </div>
       </div>
     </div>
-  )
+  );
 }

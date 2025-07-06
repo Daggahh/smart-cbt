@@ -26,6 +26,7 @@ import {
   Database,
   Zap,
   Activity,
+  XCircle,
 } from "lucide-react";
 import Link from "next/link";
 import { SmartCBTLogo } from "@/components/smart-cbt-logo";
@@ -36,6 +37,7 @@ import {
   generateMockSystemStats,
   generateMockSystemHealth,
   generateMockExams,
+  getSystemHealthStatus,
 } from "@/lib/admin-utils";
 
 // Types for admin dashboard
@@ -78,11 +80,19 @@ export default function AdminDashboard() {
   });
   const [recentExams, setRecentExams] = useState<Exam[]>([]);
   const [loading, setLoading] = useState(true);
+  const [systemStatus, setSystemStatus] = useState<{ status: string }>({
+    status: "checking",
+  });
 
   useEffect(() => {
     // Fetch real data from API
     fetchDashboardData();
     fetchSystemHealth();
+
+    // Fetch system health status for header badge
+    getSystemHealthStatus().then((res) =>
+      setSystemStatus({ status: res.status || "outage" })
+    );
 
     // Refresh data every 30 seconds
     const interval = setInterval(() => {
@@ -139,18 +149,67 @@ export default function AdminDashboard() {
           <div className="flex items-center space-x-2 md:space-x-4">
             <Badge
               variant="outline"
-              className="text-green-600 border-green-600 dark:text-green-400 dark:border-green-400 text-xs md:text-sm"
+              className={
+                systemStatus.status === "operational"
+                  ? "text-green-600 border-green-600 dark:text-green-400 dark:border-green-400 text-xs md:text-sm"
+                  : systemStatus.status === "degraded"
+                  ? "text-yellow-600 border-yellow-600 dark:text-yellow-400 dark:border-yellow-400 text-xs md:text-sm"
+                  : systemStatus.status === "checking"
+                  ? "text-gray-600 border-gray-600 dark:text-gray-400 dark:border-gray-400 text-xs md:text-sm"
+                  : "text-red-600 border-red-600 dark:text-red-400 dark:border-red-400 text-xs md:text-sm"
+              }
             >
-              <CheckCircle className="w-3 h-3 mr-1" />
-              <span className="hidden sm:inline">System Healthy</span>
-              <span className="sm:hidden">Healthy</span>
+              {systemStatus.status === "operational" && (
+                <CheckCircle className="w-3 h-3 mr-1" />
+              )}
+              {systemStatus.status === "degraded" && (
+                <AlertTriangle className="w-3 h-3 mr-1" />
+              )}
+              {systemStatus.status === "checking" && (
+                <Clock className="w-3 h-3 mr-1 animate-spin" />
+              )}
+              {systemStatus.status === "outage" && (
+                <XCircle className="w-3 h-3 mr-1" />
+              )}
+              <span className="hidden sm:inline">
+                {systemStatus.status === "operational"
+                  ? "System Healthy"
+                  : systemStatus.status === "degraded"
+                  ? "Performance Issues"
+                  : systemStatus.status === "checking"
+                  ? "Checking..."
+                  : "System Outage"}
+              </span>
+              <span className="sm:hidden">
+                {systemStatus.status === "operational"
+                  ? "Healthy"
+                  : systemStatus.status === "degraded"
+                  ? "Issues"
+                  : systemStatus.status === "checking"
+                  ? "..."
+                  : "Outage"}
+              </span>
             </Badge>
-            <Button variant="ghost" size="sm" className="hidden sm:flex">
-              <Settings className="w-4 h-4 mr-2" />
-              Settings
+            <Button
+              variant="ghost"
+              size="sm"
+              className="hidden sm:flex group"
+              asChild
+            >
+              <Link href="/admin/settings">
+                <Settings className="w-4 h-4 mr-2 transition-transform group-hover:rotate-180" />
+                Settings
+              </Link>
             </Button>
-            <Button variant="ghost" size="sm" className="sm:hidden">
-              <Settings className="w-4 h-4" />
+            <Button
+              variant="ghost"
+              size="sm"
+              className="sm:hidden group"
+              asChild
+            >
+              <Link href="/admin/settings">
+                <Settings className="w-4 h-4 transition-transform group-hover:rotate-180" />
+              </Link>
             </Button>
           </div>
         </div>
