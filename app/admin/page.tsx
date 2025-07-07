@@ -31,7 +31,6 @@ import { adminAPI } from "@/lib/api";
 import {
   getStatusColor,
   getHealthColor,
-  generateMockSystemHealth,
   generateMockExams,
   getSystemHealthStatus,
 } from "@/lib/admin-utils";
@@ -125,9 +124,17 @@ export default function AdminDashboard() {
 
   const fetchSystemHealth = async () => {
     try {
-      // TODO: Replace with actual system health API
-      const mockHealth = generateMockSystemHealth();
-      setSystemHealth(mockHealth);
+      const res = await adminAPI.getSystemHealth();
+      if (res.success && res.data) {
+        setSystemHealth(res.data);
+      } else {
+        setSystemHealth({
+          serverLoad: 0,
+          databasePerformance: 0,
+          networkLatency: 0,
+          activeConnections: 0,
+        });
+      }
     } catch (error) {
       console.error("Failed to fetch system health:", error);
     }

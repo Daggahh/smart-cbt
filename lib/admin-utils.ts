@@ -31,13 +31,6 @@ export const getHealthColor = (value: number, type: string) => {
   return "text-slate-600 dark:text-gray-400";
 };
 
-export const generateMockSystemHealth = () => ({
-  serverLoad: Math.floor(Math.random() * 30) + 10, // 10-40%
-  databasePerformance: Math.floor(Math.random() * 20) + 80, // 80-100%
-  networkLatency: Math.floor(Math.random() * 20) + 5, // 5-25ms
-  activeConnections: Math.floor(Math.random() * 1000) + 100, // 100-1100
-});
-
 export const generateMockExams = () => [
   {
     id: 1,
