@@ -65,14 +65,19 @@ async function apiCall<T>(
       ...options,
     });
 
-    const data = await response.json();
+    const responseData = await response.json();
 
     if (!response.ok) {
       return {
         success: false,
-        error: data.message || data.error || "An error occurred",
+        error:
+          responseData.message || responseData.error || "An error occurred",
       };
     }
+
+    // Handle nested data structure: { success: true, data: {...} }
+    const data =
+      responseData.data !== undefined ? responseData.data : responseData;
 
     return {
       success: true,
