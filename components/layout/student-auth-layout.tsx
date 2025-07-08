@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
-import { BackgroundBeams } from "@/components/ui/background-beams";
-import StudentAuthForm from "@/components/ui/student-auth-form";
+import { BackgroundBeams } from "@/components/effects/background-beams";
+import StudentAuthForm from "@/components/forms/student-auth-form";
 import { motion } from "motion/react";
 import Link from "next/link";
 import { ArrowLeft, Home } from "lucide-react";

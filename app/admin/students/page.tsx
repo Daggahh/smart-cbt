@@ -1,12 +1,18 @@
-"use client"
-import { useState } from "react"
-import { BackgroundBeams } from "@/components/ui/background-beams"
-import { Button } from "@/components/ui/moving-border"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Input } from "@/components/ui/input"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Progress } from "@/components/ui/progress"
+"use client";
+import { useState } from "react";
+import { BackgroundBeams } from "@/components/effects/background-beams";
+import { Button } from "@/components/effects/moving-border";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Progress } from "@/components/ui/progress";
 import {
   Plus,
   Search,
@@ -23,13 +29,13 @@ import {
   UserCheck,
   UserX,
   GraduationCap,
-} from "lucide-react"
-import Link from "next/link"
-import { SmartCBTLogo } from "@/components/smart-cbt-logo"
+} from "lucide-react";
+import Link from "next/link";
+import { SmartCBTLogo } from "@/components/smart-cbt-logo";
 
 export default function AdminStudents() {
-  const [searchTerm, setSearchTerm] = useState("")
-  const [filterStatus, setFilterStatus] = useState("all")
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterStatus, setFilterStatus] = useState("all");
 
   const students = [
     {
@@ -96,41 +102,44 @@ export default function AdminStudents() {
       course: "Law",
       level: "400",
     },
-  ]
+  ];
 
   const filteredStudents = students.filter((student) => {
     const matchesSearch =
       student.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       student.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       student.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      student.registrationNumber.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesFilter = filterStatus === "all" || student.status === filterStatus
-    return matchesSearch && matchesFilter
-  })
+      student.registrationNumber
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase());
+    const matchesFilter =
+      filterStatus === "all" || student.status === filterStatus;
+    return matchesSearch && matchesFilter;
+  });
 
   const getStatusColor = (status: string) => {
     switch (status) {
       case "active":
-        return "default"
+        return "default";
       case "suspended":
-        return "destructive"
+        return "destructive";
       case "inactive":
-        return "secondary"
+        return "secondary";
       default:
-        return "outline"
+        return "outline";
     }
-  }
+  };
 
   const getStatusIcon = (status: string) => {
     switch (status) {
       case "active":
-        return <UserCheck className="w-4 h-4" />
+        return <UserCheck className="w-4 h-4" />;
       case "suspended":
-        return <UserX className="w-4 h-4" />
+        return <UserX className="w-4 h-4" />;
       default:
-        return <Users className="w-4 h-4" />
+        return <Users className="w-4 h-4" />;
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-black/[0.96] antialiased bg-grid-white/[0.02] relative overflow-hidden">
@@ -140,7 +149,12 @@ export default function AdminStudents() {
       <header className="bg-neutral-900/80 border-b border-neutral-800 sticky top-0 z-50 backdrop-blur-xl">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <Button borderRadius="1rem" className="bg-transparent text-white border-slate-800" as={Link} href="/admin">
+            <Button
+              borderRadius="1rem"
+              className="bg-transparent text-white border-slate-800"
+              as={Link}
+              href="/admin"
+            >
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Dashboard
             </Button>
@@ -181,7 +195,9 @@ export default function AdminStudents() {
           <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 mb-4">
             Student Management
           </h1>
-          <p className="text-neutral-400 text-lg">Manage student registrations, profiles, and academic records</p>
+          <p className="text-neutral-400 text-lg">
+            Manage student registrations, profiles, and academic records
+          </p>
         </div>
 
         {/* Quick Stats */}
@@ -190,8 +206,12 @@ export default function AdminStudents() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-neutral-400">Total Students</p>
-                  <p className="text-2xl font-bold text-white">{students.length.toLocaleString()}</p>
+                  <p className="text-sm font-medium text-neutral-400">
+                    Total Students
+                  </p>
+                  <p className="text-2xl font-bold text-white">
+                    {students.length.toLocaleString()}
+                  </p>
                 </div>
                 <Users className="w-8 h-8 text-blue-400" />
               </div>
@@ -202,7 +222,9 @@ export default function AdminStudents() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-neutral-400">Active Students</p>
+                  <p className="text-sm font-medium text-neutral-400">
+                    Active Students
+                  </p>
                   <p className="text-2xl font-bold text-white">
                     {students.filter((s) => s.status === "active").length}
                   </p>
@@ -216,9 +238,15 @@ export default function AdminStudents() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-neutral-400">Average Score</p>
+                  <p className="text-sm font-medium text-neutral-400">
+                    Average Score
+                  </p>
                   <p className="text-2xl font-bold text-white">
-                    {Math.round(students.reduce((sum, s) => sum + s.averageScore, 0) / students.length)}%
+                    {Math.round(
+                      students.reduce((sum, s) => sum + s.averageScore, 0) /
+                        students.length
+                    )}
+                    %
                   </p>
                 </div>
                 <GraduationCap className="w-8 h-8 text-purple-400" />
@@ -230,8 +258,12 @@ export default function AdminStudents() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-neutral-400">Total Exams</p>
-                  <p className="text-2xl font-bold text-white">{students.reduce((sum, s) => sum + s.examsTaken, 0)}</p>
+                  <p className="text-sm font-medium text-neutral-400">
+                    Total Exams
+                  </p>
+                  <p className="text-2xl font-bold text-white">
+                    {students.reduce((sum, s) => sum + s.examsTaken, 0)}
+                  </p>
                 </div>
                 <Calendar className="w-8 h-8 text-orange-400" />
               </div>
@@ -263,7 +295,10 @@ export default function AdminStudents() {
               <option value="inactive">Inactive</option>
             </select>
           </div>
-          <Button borderRadius="0.5rem" className="bg-transparent text-white border-slate-800">
+          <Button
+            borderRadius="0.5rem"
+            className="bg-transparent text-white border-slate-800"
+          >
             <Download className="w-4 h-4 mr-2" />
             Export
           </Button>
@@ -293,7 +328,10 @@ export default function AdminStudents() {
                     </div>
                   </div>
                   <div className="flex items-center space-x-3">
-                    <Badge variant={getStatusColor(student.status)} className="flex items-center space-x-1">
+                    <Badge
+                      variant={getStatusColor(student.status)}
+                      className="flex items-center space-x-1"
+                    >
                       {getStatusIcon(student.status)}
                       <span className="capitalize">{student.status}</span>
                     </Badge>
@@ -346,10 +384,14 @@ export default function AdminStudents() {
                         </div>
                       </div>
                       <div className="space-y-1">
-                        <div className="text-xs text-neutral-400">Date of Birth</div>
+                        <div className="text-xs text-neutral-400">
+                          Date of Birth
+                        </div>
                         <div className="text-sm text-neutral-300 flex items-center space-x-2">
                           <Calendar className="w-4 h-4" />
-                          <span>{new Date(student.dateOfBirth).toLocaleDateString()}</span>
+                          <span>
+                            {new Date(student.dateOfBirth).toLocaleDateString()}
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -358,16 +400,24 @@ export default function AdminStudents() {
                   <TabsContent value="academic" className="space-y-4">
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                       <div className="space-y-1">
-                        <div className="text-xs text-neutral-400">Institution</div>
-                        <div className="text-sm text-neutral-300">{student.institution}</div>
+                        <div className="text-xs text-neutral-400">
+                          Institution
+                        </div>
+                        <div className="text-sm text-neutral-300">
+                          {student.institution}
+                        </div>
                       </div>
                       <div className="space-y-1">
                         <div className="text-xs text-neutral-400">Course</div>
-                        <div className="text-sm text-neutral-300">{student.course}</div>
+                        <div className="text-sm text-neutral-300">
+                          {student.course}
+                        </div>
                       </div>
                       <div className="space-y-1">
                         <div className="text-xs text-neutral-400">Level</div>
-                        <div className="text-sm text-neutral-300">{student.level} Level</div>
+                        <div className="text-sm text-neutral-300">
+                          {student.level} Level
+                        </div>
                       </div>
                     </div>
                   </TabsContent>
@@ -375,18 +425,28 @@ export default function AdminStudents() {
                   <TabsContent value="exams" className="space-y-4">
                     <div className="grid grid-cols-3 gap-4">
                       <div className="text-center p-3 bg-neutral-800/50 rounded-lg">
-                        <div className="text-lg font-semibold text-blue-400">{student.examsTaken}</div>
-                        <div className="text-xs text-neutral-400">Exams Taken</div>
+                        <div className="text-lg font-semibold text-blue-400">
+                          {student.examsTaken}
+                        </div>
+                        <div className="text-xs text-neutral-400">
+                          Exams Taken
+                        </div>
                       </div>
                       <div className="text-center p-3 bg-neutral-800/50 rounded-lg">
-                        <div className="text-lg font-semibold text-green-400">{student.averageScore}%</div>
-                        <div className="text-xs text-neutral-400">Average Score</div>
+                        <div className="text-lg font-semibold text-green-400">
+                          {student.averageScore}%
+                        </div>
+                        <div className="text-xs text-neutral-400">
+                          Average Score
+                        </div>
                       </div>
                       <div className="text-center p-3 bg-neutral-800/50 rounded-lg">
                         <div className="text-lg font-semibold text-purple-400">
                           {new Date(student.lastExam).toLocaleDateString()}
                         </div>
-                        <div className="text-xs text-neutral-400">Last Exam</div>
+                        <div className="text-xs text-neutral-400">
+                          Last Exam
+                        </div>
                       </div>
                     </div>
                     <div className="space-y-2">
@@ -396,11 +456,14 @@ export default function AdminStudents() {
                           {student.averageScore >= 80
                             ? "Excellent"
                             : student.averageScore >= 60
-                              ? "Good"
-                              : "Needs Improvement"}
+                            ? "Good"
+                            : "Needs Improvement"}
                         </span>
                       </div>
-                      <Progress value={student.averageScore} className="h-2 bg-neutral-800" />
+                      <Progress
+                        value={student.averageScore}
+                        className="h-2 bg-neutral-800"
+                      />
                     </div>
                   </TabsContent>
 
@@ -411,7 +474,9 @@ export default function AdminStudents() {
                         <span className="text-neutral-400">2 hours ago</span>
                       </div>
                       <div className="flex items-center justify-between text-sm">
-                        <span className="text-neutral-300">Account Created</span>
+                        <span className="text-neutral-300">
+                          Account Created
+                        </span>
                         <span className="text-neutral-400">Jan 1, 2024</span>
                       </div>
                       <div className="flex items-center justify-between text-sm">
@@ -446,13 +511,19 @@ export default function AdminStudents() {
                     Edit
                   </Button>
                   {student.status === "suspended" && (
-                    <Button borderRadius="0.5rem" className="bg-green-600 text-white border-0">
+                    <Button
+                      borderRadius="0.5rem"
+                      className="bg-green-600 text-white border-0"
+                    >
                       <UserCheck className="w-4 h-4 mr-2" />
                       Activate
                     </Button>
                   )}
                   {student.status === "active" && (
-                    <Button borderRadius="0.5rem" className="bg-red-600 text-white border-0">
+                    <Button
+                      borderRadius="0.5rem"
+                      className="bg-red-600 text-white border-0"
+                    >
                       <UserX className="w-4 h-4 mr-2" />
                       Suspend
                     </Button>
@@ -468,8 +539,12 @@ export default function AdminStudents() {
             <div className="text-neutral-400 mb-4">
               <Users className="w-16 h-16 mx-auto" />
             </div>
-            <h3 className="text-lg font-medium text-neutral-300 mb-2">No students found</h3>
-            <p className="text-neutral-500 mb-4">Try adjusting your search or filter criteria</p>
+            <h3 className="text-lg font-medium text-neutral-300 mb-2">
+              No students found
+            </h3>
+            <p className="text-neutral-500 mb-4">
+              Try adjusting your search or filter criteria
+            </p>
             <Button
               borderRadius="1rem"
               className="bg-gradient-to-r from-blue-600 to-purple-600 text-white border-0"
@@ -483,5 +558,5 @@ export default function AdminStudents() {
         )}
       </div>
     </div>
-  )
+  );
 }

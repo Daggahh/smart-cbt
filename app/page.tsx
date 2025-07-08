@@ -1,8 +1,8 @@
 "use client";
-import { TextGenerateEffect } from "@/components/ui/text-generate-effect";
+import { TextGenerateEffect } from "@/components/effects/text-generate-effect";
 import { BentoGrid, BentoGridItem } from "@/components/ui/bento-grid";
-import { FloatingNav } from "@/components/ui/floating-navbar";
-import { Button } from "@/components/ui/moving-border";
+import { FloatingNav } from "@/components/layout/floating-navbar";
+import { Button } from "@/components/effects/moving-border";
 import { SmartCBTLogo } from "@/components/smart-cbt-logo";
 import {
   Shield,
@@ -19,9 +19,9 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
-import { GridBackground } from "@/components/ui/grid-background";
+import { GridBackground } from "@/components/effects/grid-background";
 import { motion } from "framer-motion";
-import { GridBackgroundStack } from "@/components/ui/grid-background-stack";
+import { GridBackgroundStack } from "@/components/effects/grid-background-stack";
 import { IconBrandNextjs } from "@tabler/icons-react";
 import {
   siDocker,

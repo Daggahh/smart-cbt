@@ -241,13 +241,6 @@ export const adminAPI = {
       method: "POST",
     });
   },
-
-  // Get system health metrics
-  async getSystemHealth(): Promise<ApiResponse<any>> {
-    return apiCall("/api/admin/system-health", {
-      method: "GET",
-    });
-  },
 };
 
 // Utility function to set auth token in cookies

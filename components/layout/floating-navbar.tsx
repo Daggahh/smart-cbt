@@ -10,7 +10,7 @@ import {
   MobileNavHeader,
   MobileNavToggle,
   MobileNavMenu,
-} from "@/components/ui/resizable-navbar";
+} from "@/components/layout/resizable-navbar";
 import type { JSX } from "react/jsx-runtime";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 

@@ -1,11 +1,17 @@
-"use client"
-import { useState } from "react"
-import { BackgroundBeams } from "@/components/ui/background-beams"
-import { Button } from "@/components/ui/moving-border"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Input } from "@/components/ui/input"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+"use client";
+import { useState } from "react";
+import { BackgroundBeams } from "@/components/effects/background-beams";
+import { Button } from "@/components/effects/moving-border";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Search,
   Filter,
@@ -22,13 +28,13 @@ import {
   Globe,
   Download,
   RefreshCw,
-} from "lucide-react"
-import Link from "next/link"
-import { SmartCBTLogo } from "@/components/smart-cbt-logo"
+} from "lucide-react";
+import Link from "next/link";
+import { SmartCBTLogo } from "@/components/smart-cbt-logo";
 
 export default function AdminSecurity() {
-  const [searchTerm, setSearchTerm] = useState("")
-  const [filterSeverity, setFilterSeverity] = useState("all")
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterSeverity, setFilterSeverity] = useState("all");
 
   const securityEvents = [
     {
@@ -96,83 +102,84 @@ export default function AdminSecurity() {
       location: "Kano, Nigeria",
       status: "monitoring",
     },
-  ]
+  ];
 
   const systemMetrics = {
     activeConnections: 12847,
     blockedAttempts: 234,
     flaggedSessions: 15,
     securityScore: 94,
-  }
+  };
 
   const filteredEvents = securityEvents.filter((event) => {
     const matchesSearch =
       event.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
       event.user.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      event.type.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesFilter = filterSeverity === "all" || event.severity === filterSeverity
-    return matchesSearch && matchesFilter
-  })
+      event.type.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesFilter =
+      filterSeverity === "all" || event.severity === filterSeverity;
+    return matchesSearch && matchesFilter;
+  });
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {
       case "high":
-        return "destructive"
+        return "destructive";
       case "medium":
-        return "outline"
+        return "outline";
       case "low":
-        return "secondary"
+        return "secondary";
       default:
-        return "secondary"
+        return "secondary";
     }
-  }
+  };
 
   const getSeverityIcon = (severity: string) => {
     switch (severity) {
       case "high":
-        return <AlertTriangle className="w-4 h-4" />
+        return <AlertTriangle className="w-4 h-4" />;
       case "medium":
-        return <Eye className="w-4 h-4" />
+        return <Eye className="w-4 h-4" />;
       case "low":
-        return <Clock className="w-4 h-4" />
+        return <Clock className="w-4 h-4" />;
       default:
-        return <Shield className="w-4 h-4" />
+        return <Shield className="w-4 h-4" />;
     }
-  }
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
       case "investigating":
-        return "bg-yellow-900/20 text-yellow-400 border-yellow-800"
+        return "bg-yellow-900/20 text-yellow-400 border-yellow-800";
       case "resolved":
-        return "bg-green-900/20 text-green-400 border-green-800"
+        return "bg-green-900/20 text-green-400 border-green-800";
       case "flagged":
-        return "bg-red-900/20 text-red-400 border-red-800"
+        return "bg-red-900/20 text-red-400 border-red-800";
       case "blocked":
-        return "bg-red-900/20 text-red-400 border-red-800"
+        return "bg-red-900/20 text-red-400 border-red-800";
       case "monitoring":
-        return "bg-blue-900/20 text-blue-400 border-blue-800"
+        return "bg-blue-900/20 text-blue-400 border-blue-800";
       default:
-        return "bg-neutral-800 text-neutral-400"
+        return "bg-neutral-800 text-neutral-400";
     }
-  }
+  };
 
   const getEventTypeIcon = (type: string) => {
     switch (type) {
       case "suspicious_activity":
-        return <AlertTriangle className="w-5 h-5 text-red-400" />
+        return <AlertTriangle className="w-5 h-5 text-red-400" />;
       case "login_anomaly":
-        return <UserX className="w-5 h-5 text-yellow-400" />
+        return <UserX className="w-5 h-5 text-yellow-400" />;
       case "copy_attempt":
-        return <Shield className="w-5 h-5 text-red-400" />
+        return <Shield className="w-5 h-5 text-red-400" />;
       case "failed_login":
-        return <Lock className="w-5 h-5 text-orange-400" />
+        return <Lock className="w-5 h-5 text-orange-400" />;
       case "window_blur":
-        return <Monitor className="w-5 h-5 text-blue-400" />
+        return <Monitor className="w-5 h-5 text-blue-400" />;
       default:
-        return <Activity className="w-5 h-5 text-neutral-400" />
+        return <Activity className="w-5 h-5 text-neutral-400" />;
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-black/[0.96] antialiased bg-grid-white/[0.02] relative overflow-hidden">
@@ -182,7 +189,12 @@ export default function AdminSecurity() {
       <header className="bg-neutral-900/80 border-b border-neutral-800 sticky top-0 z-50 backdrop-blur-xl">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <Button borderRadius="1rem" className="bg-transparent text-white border-slate-800" as={Link} href="/admin">
+            <Button
+              borderRadius="1rem"
+              className="bg-transparent text-white border-slate-800"
+              as={Link}
+              href="/admin"
+            >
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Dashboard
             </Button>
@@ -195,11 +207,17 @@ export default function AdminSecurity() {
           </div>
 
           <div className="flex items-center space-x-2">
-            <Button borderRadius="1rem" className="bg-transparent text-white border-slate-800">
+            <Button
+              borderRadius="1rem"
+              className="bg-transparent text-white border-slate-800"
+            >
               <RefreshCw className="w-4 h-4 mr-2" />
               Refresh
             </Button>
-            <Button borderRadius="1rem" className="bg-transparent text-white border-slate-800">
+            <Button
+              borderRadius="1rem"
+              className="bg-transparent text-white border-slate-800"
+            >
               <Download className="w-4 h-4 mr-2" />
               Export Logs
             </Button>
@@ -213,7 +231,9 @@ export default function AdminSecurity() {
           <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 mb-4">
             Security Monitoring
           </h1>
-          <p className="text-neutral-400 text-lg">Monitor security events, threats, and system integrity</p>
+          <p className="text-neutral-400 text-lg">
+            Monitor security events, threats, and system integrity
+          </p>
         </div>
 
         {/* Security Overview */}
@@ -222,8 +242,12 @@ export default function AdminSecurity() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-neutral-400">Security Score</p>
-                  <p className="text-2xl font-bold text-green-400">{systemMetrics.securityScore}%</p>
+                  <p className="text-sm font-medium text-neutral-400">
+                    Security Score
+                  </p>
+                  <p className="text-2xl font-bold text-green-400">
+                    {systemMetrics.securityScore}%
+                  </p>
                 </div>
                 <Shield className="w-8 h-8 text-green-400" />
               </div>
@@ -234,8 +258,12 @@ export default function AdminSecurity() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-neutral-400">Active Connections</p>
-                  <p className="text-2xl font-bold text-white">{systemMetrics.activeConnections.toLocaleString()}</p>
+                  <p className="text-sm font-medium text-neutral-400">
+                    Active Connections
+                  </p>
+                  <p className="text-2xl font-bold text-white">
+                    {systemMetrics.activeConnections.toLocaleString()}
+                  </p>
                 </div>
                 <Wifi className="w-8 h-8 text-blue-400" />
               </div>
@@ -246,8 +274,12 @@ export default function AdminSecurity() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-neutral-400">Blocked Attempts</p>
-                  <p className="text-2xl font-bold text-white">{systemMetrics.blockedAttempts}</p>
+                  <p className="text-sm font-medium text-neutral-400">
+                    Blocked Attempts
+                  </p>
+                  <p className="text-2xl font-bold text-white">
+                    {systemMetrics.blockedAttempts}
+                  </p>
                 </div>
                 <UserX className="w-8 h-8 text-red-400" />
               </div>
@@ -258,8 +290,12 @@ export default function AdminSecurity() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-neutral-400">Flagged Sessions</p>
-                  <p className="text-2xl font-bold text-white">{systemMetrics.flaggedSessions}</p>
+                  <p className="text-sm font-medium text-neutral-400">
+                    Flagged Sessions
+                  </p>
+                  <p className="text-2xl font-bold text-white">
+                    {systemMetrics.flaggedSessions}
+                  </p>
                 </div>
                 <AlertTriangle className="w-8 h-8 text-yellow-400" />
               </div>
@@ -270,7 +306,10 @@ export default function AdminSecurity() {
         {/* Main Security Tabs */}
         <Tabs defaultValue="events" className="space-y-6">
           <TabsList className="grid w-full grid-cols-4 bg-neutral-800 border-neutral-700">
-            <TabsTrigger value="events" className="data-[state=active]:bg-neutral-700 data-[state=active]:text-white">
+            <TabsTrigger
+              value="events"
+              className="data-[state=active]:bg-neutral-700 data-[state=active]:text-white"
+            >
               Security Events
             </TabsTrigger>
             <TabsTrigger
@@ -279,10 +318,16 @@ export default function AdminSecurity() {
             >
               Live Monitoring
             </TabsTrigger>
-            <TabsTrigger value="threats" className="data-[state=active]:bg-neutral-700 data-[state=active]:text-white">
+            <TabsTrigger
+              value="threats"
+              className="data-[state=active]:bg-neutral-700 data-[state=active]:text-white"
+            >
               Threat Detection
             </TabsTrigger>
-            <TabsTrigger value="audit" className="data-[state=active]:bg-neutral-700 data-[state=active]:text-white">
+            <TabsTrigger
+              value="audit"
+              className="data-[state=active]:bg-neutral-700 data-[state=active]:text-white"
+            >
               Audit Logs
             </TabsTrigger>
           </TabsList>
@@ -325,13 +370,22 @@ export default function AdminSecurity() {
                   <CardContent className="p-6">
                     <div className="flex items-start justify-between">
                       <div className="flex items-start space-x-4 flex-1">
-                        <div className="flex-shrink-0">{getEventTypeIcon(event.type)}</div>
+                        <div className="flex-shrink-0">
+                          {getEventTypeIcon(event.type)}
+                        </div>
                         <div className="flex-1">
                           <div className="flex items-center space-x-3 mb-2">
-                            <h3 className="font-semibold text-white">{event.description}</h3>
-                            <Badge variant={getSeverityColor(event.severity)} className="flex items-center space-x-1">
+                            <h3 className="font-semibold text-white">
+                              {event.description}
+                            </h3>
+                            <Badge
+                              variant={getSeverityColor(event.severity)}
+                              className="flex items-center space-x-1"
+                            >
                               {getSeverityIcon(event.severity)}
-                              <span className="capitalize">{event.severity}</span>
+                              <span className="capitalize">
+                                {event.severity}
+                              </span>
                             </Badge>
                             <Badge className={getStatusColor(event.status)}>
                               <span className="capitalize">{event.status}</span>
@@ -339,27 +393,35 @@ export default function AdminSecurity() {
                           </div>
                           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-neutral-400">
                             <div>
-                              <span className="font-medium">User:</span> {event.user}
+                              <span className="font-medium">User:</span>{" "}
+                              {event.user}
                             </div>
                             <div>
-                              <span className="font-medium">Time:</span> {new Date(event.timestamp).toLocaleString()}
+                              <span className="font-medium">Time:</span>{" "}
+                              {new Date(event.timestamp).toLocaleString()}
                             </div>
                             <div>
-                              <span className="font-medium">IP:</span> {event.ipAddress}
+                              <span className="font-medium">IP:</span>{" "}
+                              {event.ipAddress}
                             </div>
                             <div>
-                              <span className="font-medium">Location:</span> {event.location}
+                              <span className="font-medium">Location:</span>{" "}
+                              {event.location}
                             </div>
                           </div>
                           {event.examTitle && (
                             <div className="mt-2 text-sm text-neutral-400">
-                              <span className="font-medium">Exam:</span> {event.examTitle}
+                              <span className="font-medium">Exam:</span>{" "}
+                              {event.examTitle}
                             </div>
                           )}
                         </div>
                       </div>
                       <div className="flex items-center space-x-2">
-                        <Button borderRadius="0.5rem" className="bg-transparent text-white border-slate-800">
+                        <Button
+                          borderRadius="0.5rem"
+                          className="bg-transparent text-white border-slate-800"
+                        >
                           <Eye className="w-4 h-4 mr-2" />
                           Details
                         </Button>
@@ -380,12 +442,16 @@ export default function AdminSecurity() {
                     <Activity className="w-6 h-6 text-green-400" />
                     <span>Real-time Activity</span>
                   </CardTitle>
-                  <CardDescription className="text-neutral-400">Live system monitoring</CardDescription>
+                  <CardDescription className="text-neutral-400">
+                    Live system monitoring
+                  </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <span className="text-neutral-300">Active Exam Sessions</span>
+                      <span className="text-neutral-300">
+                        Active Exam Sessions
+                      </span>
                       <span className="text-green-400 font-medium">847</span>
                     </div>
                     <div className="flex items-center justify-between">
@@ -393,11 +459,15 @@ export default function AdminSecurity() {
                       <span className="text-blue-400 font-medium">12,847</span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-neutral-300">Failed Login Attempts</span>
+                      <span className="text-neutral-300">
+                        Failed Login Attempts
+                      </span>
                       <span className="text-red-400 font-medium">23</span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-neutral-300">Suspicious Activities</span>
+                      <span className="text-neutral-300">
+                        Suspicious Activities
+                      </span>
                       <span className="text-yellow-400 font-medium">5</span>
                     </div>
                   </div>
@@ -410,7 +480,9 @@ export default function AdminSecurity() {
                     <Globe className="w-6 h-6 text-blue-400" />
                     <span>Geographic Distribution</span>
                   </CardTitle>
-                  <CardDescription className="text-neutral-400">User locations and access patterns</CardDescription>
+                  <CardDescription className="text-neutral-400">
+                    User locations and access patterns
+                  </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-3">
@@ -427,7 +499,9 @@ export default function AdminSecurity() {
                       <span className="text-white font-medium">2,156</span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-neutral-300">Port Harcourt, Nigeria</span>
+                      <span className="text-neutral-300">
+                        Port Harcourt, Nigeria
+                      </span>
                       <span className="text-white font-medium">1,847</span>
                     </div>
                     <div className="flex items-center justify-between">
@@ -457,17 +531,27 @@ export default function AdminSecurity() {
                   <div className="text-center p-4 bg-red-900/20 rounded-lg border border-red-800">
                     <AlertTriangle className="w-8 h-8 text-red-400 mx-auto mb-2" />
                     <div className="text-lg font-semibold text-red-400">15</div>
-                    <div className="text-xs text-neutral-400">High Risk Events</div>
+                    <div className="text-xs text-neutral-400">
+                      High Risk Events
+                    </div>
                   </div>
                   <div className="text-center p-4 bg-yellow-900/20 rounded-lg border border-yellow-800">
                     <Eye className="w-8 h-8 text-yellow-400 mx-auto mb-2" />
-                    <div className="text-lg font-semibold text-yellow-400">47</div>
-                    <div className="text-xs text-neutral-400">Medium Risk Events</div>
+                    <div className="text-lg font-semibold text-yellow-400">
+                      47
+                    </div>
+                    <div className="text-xs text-neutral-400">
+                      Medium Risk Events
+                    </div>
                   </div>
                   <div className="text-center p-4 bg-blue-900/20 rounded-lg border border-blue-800">
                     <Clock className="w-8 h-8 text-blue-400 mx-auto mb-2" />
-                    <div className="text-lg font-semibold text-blue-400">123</div>
-                    <div className="text-xs text-neutral-400">Low Risk Events</div>
+                    <div className="text-lg font-semibold text-blue-400">
+                      123
+                    </div>
+                    <div className="text-xs text-neutral-400">
+                      Low Risk Events
+                    </div>
                   </div>
                 </div>
 
@@ -477,30 +561,46 @@ export default function AdminSecurity() {
                     <div className="flex items-center justify-between p-3 bg-neutral-800/50 rounded-lg">
                       <div className="flex items-center space-x-3">
                         <div className="w-3 h-3 bg-green-400 rounded-full"></div>
-                        <span className="text-neutral-300">Multiple Tab Switching</span>
+                        <span className="text-neutral-300">
+                          Multiple Tab Switching
+                        </span>
                       </div>
-                      <Badge className="bg-green-900/20 text-green-400 border-green-800">Active</Badge>
+                      <Badge className="bg-green-900/20 text-green-400 border-green-800">
+                        Active
+                      </Badge>
                     </div>
                     <div className="flex items-center justify-between p-3 bg-neutral-800/50 rounded-lg">
                       <div className="flex items-center space-x-3">
                         <div className="w-3 h-3 bg-green-400 rounded-full"></div>
-                        <span className="text-neutral-300">Copy/Paste Detection</span>
+                        <span className="text-neutral-300">
+                          Copy/Paste Detection
+                        </span>
                       </div>
-                      <Badge className="bg-green-900/20 text-green-400 border-green-800">Active</Badge>
+                      <Badge className="bg-green-900/20 text-green-400 border-green-800">
+                        Active
+                      </Badge>
                     </div>
                     <div className="flex items-center justify-between p-3 bg-neutral-800/50 rounded-lg">
                       <div className="flex items-center space-x-3">
                         <div className="w-3 h-3 bg-green-400 rounded-full"></div>
-                        <span className="text-neutral-300">Unusual Login Patterns</span>
+                        <span className="text-neutral-300">
+                          Unusual Login Patterns
+                        </span>
                       </div>
-                      <Badge className="bg-green-900/20 text-green-400 border-green-800">Active</Badge>
+                      <Badge className="bg-green-900/20 text-green-400 border-green-800">
+                        Active
+                      </Badge>
                     </div>
                     <div className="flex items-center justify-between p-3 bg-neutral-800/50 rounded-lg">
                       <div className="flex items-center space-x-3">
                         <div className="w-3 h-3 bg-green-400 rounded-full"></div>
-                        <span className="text-neutral-300">Window Focus Loss</span>
+                        <span className="text-neutral-300">
+                          Window Focus Loss
+                        </span>
                       </div>
-                      <Badge className="bg-green-900/20 text-green-400 border-green-800">Active</Badge>
+                      <Badge className="bg-green-900/20 text-green-400 border-green-800">
+                        Active
+                      </Badge>
                     </div>
                   </div>
                 </div>
@@ -525,37 +625,55 @@ export default function AdminSecurity() {
                   <div className="flex items-center justify-between p-3 border-b border-neutral-800">
                     <div className="flex items-center space-x-3">
                       <Clock className="w-4 h-4 text-blue-400" />
-                      <span className="text-neutral-300">Admin login: admin@smartcbt.com</span>
+                      <span className="text-neutral-300">
+                        Admin login: admin@smartcbt.com
+                      </span>
                     </div>
-                    <span className="text-neutral-400 text-sm">2 minutes ago</span>
+                    <span className="text-neutral-400 text-sm">
+                      2 minutes ago
+                    </span>
                   </div>
                   <div className="flex items-center justify-between p-3 border-b border-neutral-800">
                     <div className="flex items-center space-x-3">
                       <Shield className="w-4 h-4 text-green-400" />
-                      <span className="text-neutral-300">Exam created: Mathematics Mock Test</span>
+                      <span className="text-neutral-300">
+                        Exam created: Mathematics Mock Test
+                      </span>
                     </div>
-                    <span className="text-neutral-400 text-sm">15 minutes ago</span>
+                    <span className="text-neutral-400 text-sm">
+                      15 minutes ago
+                    </span>
                   </div>
                   <div className="flex items-center justify-between p-3 border-b border-neutral-800">
                     <div className="flex items-center space-x-3">
                       <UserX className="w-4 h-4 text-red-400" />
-                      <span className="text-neutral-300">Student suspended: STU003</span>
+                      <span className="text-neutral-300">
+                        Student suspended: STU003
+                      </span>
                     </div>
                     <span className="text-neutral-400 text-sm">1 hour ago</span>
                   </div>
                   <div className="flex items-center justify-between p-3 border-b border-neutral-800">
                     <div className="flex items-center space-x-3">
                       <Activity className="w-4 h-4 text-purple-400" />
-                      <span className="text-neutral-300">Batch created: Morning Batch E</span>
+                      <span className="text-neutral-300">
+                        Batch created: Morning Batch E
+                      </span>
                     </div>
-                    <span className="text-neutral-400 text-sm">2 hours ago</span>
+                    <span className="text-neutral-400 text-sm">
+                      2 hours ago
+                    </span>
                   </div>
                   <div className="flex items-center justify-between p-3">
                     <div className="flex items-center space-x-3">
                       <Monitor className="w-4 h-4 text-yellow-400" />
-                      <span className="text-neutral-300">System backup completed</span>
+                      <span className="text-neutral-300">
+                        System backup completed
+                      </span>
                     </div>
-                    <span className="text-neutral-400 text-sm">3 hours ago</span>
+                    <span className="text-neutral-400 text-sm">
+                      3 hours ago
+                    </span>
                   </div>
                 </div>
               </CardContent>
@@ -564,5 +682,5 @@ export default function AdminSecurity() {
         </Tabs>
       </div>
     </div>
-  )
+  );
 }

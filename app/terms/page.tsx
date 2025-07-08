@@ -1,6 +1,6 @@
-import { AuroraBackground } from "@/components/ui/aurora-background";
-import { TracingBeam } from "@/components/ui/tracing-beam";
-import { Button } from "@/components/ui/moving-border";
+import { AuroraBackground } from "@/components/effects/aurora-background";
+import { TracingBeam } from "@/components/effects/tracing-beam";
+import { Button } from "@/components/effects/moving-border";
 import {
   Card,
   CardContent,

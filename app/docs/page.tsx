@@ -1,9 +1,9 @@
 "use client";
-import { BackgroundBeams } from "@/components/ui/background-beams";
-import { TextGenerateEffect } from "@/components/ui/text-generate-effect";
+import { BackgroundBeams } from "@/components/effects/background-beams";
+import { TextGenerateEffect } from "@/components/effects/text-generate-effect";
 import { BentoGrid, BentoGridItem } from "@/components/ui/bento-grid";
-import { FloatingNav } from "@/components/ui/floating-navbar";
-import { Button } from "@/components/ui/moving-border";
+import { FloatingNav } from "@/components/layout/floating-navbar";
+import { Button } from "@/components/effects/moving-border";
 import { Badge } from "@/components/ui/badge";
 import {
   BookOpen,
@@ -22,7 +22,7 @@ import {
   Rocket,
 } from "lucide-react";
 import Link from "next/link";
-import { GridBackground } from "@/components/ui/grid-background";
+import { GridBackground } from "@/components/effects/grid-background";
 
 const navItems = [
   {

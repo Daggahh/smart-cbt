@@ -1,74 +1,65 @@
 import { type NextRequest, NextResponse } from "next/server"
+import { fileProcessor } from "@/lib/upload/processor"
 
-// Mock file processing - in production, integrate with Gemini AI for document parsing
 export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData()
     const file = formData.get("file") as File
+    const fileType = formData.get("type") as string
 
     if (!file) {
-      return NextResponse.json({ error: "No file uploaded" }, { status: 400 })
+      return NextResponse.json({ error: "No file provided" }, { status: 400 })
     }
 
-    // Validate file type
-    const allowedTypes = [
-      "application/pdf",
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-      "text/plain",
-    ]
-    if (!allowedTypes.includes(file.type)) {
-      return NextResponse.json({ error: "Invalid file type. Please upload PDF, DOCX, or TXT files." }, { status: 400 })
+    const content = await file.text()
+    let result
+
+    switch (fileType) {
+      case "csv":
+        result = await fileProcessor.processCSVFile(content)
+        break
+      case "json":
+        result = await fileProcessor.processTextFile(content)
+        break
+      case "pdf":
+        result = await fileProcessor.processPDFFile(content)
+        break
+      default:
+        result = await fileProcessor.processTextFile(content)
     }
 
-    // Simulate AI processing
-    await new Promise((resolve) => setTimeout(resolve, 2000))
-
-    // Mock extracted questions
-    const extractedQuestions = [
-      {
-        id: "q1",
-        question: "What is the capital of Nigeria?",
-        options: ["Lagos", "Abuja", "Kano", "Port Harcourt"],
-        correctAnswer: 1,
-        subject: "Geography",
-        difficulty: "easy",
-        explanation: "Abuja has been the capital of Nigeria since 1991.",
-      },
-      {
-        id: "q2",
-        question: "Calculate the area of a rectangle with length 8cm and width 5cm.",
-        options: ["40 cm²", "26 cm²", "13 cm²", "35 cm²"],
-        correctAnswer: 0,
-        subject: "Mathematics",
-        difficulty: "easy",
-        explanation: "Area of rectangle = length × width = 8 × 5 = 40 cm²",
-      },
-      {
-        id: "q3",
-        question: "Which of the following is a renewable energy source?",
-        options: ["Coal", "Natural Gas", "Solar", "Petroleum"],
-        correctAnswer: 2,
-        subject: "Physics",
-        difficulty: "medium",
-        explanation: "Solar energy is renewable as it comes from the sun which is an inexhaustible source.",
-      },
-    ]
-
-    return NextResponse.json({
-      success: true,
-      message: `Successfully extracted ${extractedQuestions.length} questions from ${file.name}`,
-      questions: extractedQuestions,
-      metadata: {
-        filename: file.name,
-        fileSize: file.size,
-        processedAt: new Date().toISOString(),
-        totalQuestions: extractedQuestions.length,
-        subjects: [...new Set(extractedQuestions.map((q) => q.subject))],
-        difficulties: [...new Set(extractedQuestions.map((q) => q.difficulty))],
-      },
-    })
+    return NextResponse.json(result)
   } catch (error) {
-    console.error("File upload error:", error)
+    console.error("Error processing file:", error)
     return NextResponse.json({ error: "Failed to process file" }, { status: 500 })
+  }
+}
+
+export async function GET(request: NextRequest) {
+  const { searchParams } = new URL(request.url)
+  const format = searchParams.get("format")
+
+  try {
+    let sample
+    if (format === "csv") {
+      sample = await fileProcessor.generateSampleCSV()
+      return new NextResponse(sample, {
+        headers: {
+          "Content-Type": "text/csv",
+          "Content-Disposition": "attachment; filename=sample-questions.csv",
+        },
+      })
+    } else {
+      sample = await fileProcessor.generateSampleJSON()
+      return new NextResponse(sample, {
+        headers: {
+          "Content-Type": "application/json",
+          "Content-Disposition": "attachment; filename=sample-questions.json",
+        },
+      })
+    }
+  } catch (error) {
+    console.error("Error generating sample:", error)
+    return NextResponse.json({ error: "Failed to generate sample" }, { status: 500 })
   }
 }

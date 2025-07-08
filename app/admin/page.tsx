@@ -43,13 +43,6 @@ interface SystemStats {
   systemUptime: number;
 }
 
-interface SystemHealth {
-  serverLoad: number;
-  databasePerformance: number;
-  networkLatency: number;
-  activeConnections: number;
-}
-
 interface Exam {
   id: number;
   title: string;
@@ -67,12 +60,6 @@ export default function AdminDashboard() {
     completedToday: 0,
     systemUptime: 0,
   });
-  const [systemHealth, setSystemHealth] = useState<SystemHealth>({
-    serverLoad: 0,
-    databasePerformance: 0,
-    networkLatency: 0,
-    activeConnections: 0,
-  });
   const [recentExams, setRecentExams] = useState<Exam[]>([]);
   const [loading, setLoading] = useState(true);
   const [systemStatus, setSystemStatus] = useState<{ status: string }>({
@@ -82,7 +69,6 @@ export default function AdminDashboard() {
   useEffect(() => {
     // Fetch real data from API
     fetchDashboardData();
-    fetchSystemHealth();
 
     // Fetch system health status for header badge
     getSystemHealthStatus().then((res) =>
@@ -92,7 +78,6 @@ export default function AdminDashboard() {
     // Refresh data every 30 seconds
     const interval = setInterval(() => {
       fetchDashboardData();
-      fetchSystemHealth();
     }, 30000);
 
     return () => clearInterval(interval);
@@ -119,24 +104,6 @@ export default function AdminDashboard() {
       console.error("Failed to fetch dashboard data:", error);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const fetchSystemHealth = async () => {
-    try {
-      const res = await adminAPI.getSystemHealth();
-      if (res.success && res.data) {
-        setSystemHealth(res.data);
-      } else {
-        setSystemHealth({
-          serverLoad: 0,
-          databasePerformance: 0,
-          networkLatency: 0,
-          activeConnections: 0,
-        });
-      }
-    } catch (error) {
-      console.error("Failed to fetch system health:", error);
     }
   };
 
@@ -484,76 +451,8 @@ export default function AdminDashboard() {
                 </Card>
               </div>
 
-              {/* System Health */}
+              {/* Quick Actions */}
               <div className="space-y-4 md:space-y-6">
-                <Card className="dark:bg-black dark:border-gray-800">
-                  <CardHeader>
-                    <CardTitle className="text-slate-800 dark:text-white text-base md:text-lg">
-                      System Health
-                    </CardTitle>
-                    <CardDescription className="text-slate-600 dark:text-gray-400">
-                      Real-time system monitoring
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs md:text-sm text-slate-600 dark:text-gray-400">
-                        Server Load
-                      </span>
-                      <span
-                        className={`text-xs md:text-sm font-medium ${getHealthColor(
-                          systemHealth.serverLoad,
-                          "performance"
-                        )}`}
-                      >
-                        {systemHealth.serverLoad}%
-                      </span>
-                    </div>
-                    <Progress value={systemHealth.serverLoad} className="h-2" />
-
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs md:text-sm text-slate-600 dark:text-gray-400">
-                        Database Performance
-                      </span>
-                      <span
-                        className={`text-xs md:text-sm font-medium ${getHealthColor(
-                          systemHealth.databasePerformance,
-                          "performance"
-                        )}`}
-                      >
-                        {systemHealth.databasePerformance}%
-                      </span>
-                    </div>
-                    <Progress
-                      value={systemHealth.databasePerformance}
-                      className="h-2"
-                    />
-
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs md:text-sm text-slate-600 dark:text-gray-400">
-                        Network Latency
-                      </span>
-                      <span
-                        className={`text-xs md:text-sm font-medium ${getHealthColor(
-                          systemHealth.networkLatency,
-                          "latency"
-                        )}`}
-                      >
-                        {systemHealth.networkLatency}ms
-                      </span>
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs md:text-sm text-slate-600 dark:text-gray-400">
-                        Active Connections
-                      </span>
-                      <span className="text-xs md:text-sm font-medium text-slate-800 dark:text-white">
-                        {systemHealth.activeConnections.toLocaleString()}
-                      </span>
-                    </div>
-                  </CardContent>
-                </Card>
-
                 <Card className="dark:bg-black dark:border-gray-800">
                   <CardHeader>
                     <CardTitle className="text-slate-800 dark:text-white text-base md:text-lg">
