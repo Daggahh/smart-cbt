@@ -1,6 +1,6 @@
 "use client";
 
-import { LogOutIcon, MoreVerticalIcon } from "lucide-react";
+import { LogOutIcon, MoreVerticalIcon, Sun, Moon } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -17,6 +17,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { signOut } from "next-auth/react";
+import { useTheme } from "next-themes";
 
 export function NavUser({
   user,
@@ -34,6 +35,7 @@ export function NavUser({
     : "U";
   const logoutUrl =
     user.role === "student" ? "/auth/student/login" : "/auth/admin/login";
+  const { setTheme, theme } = useTheme();
 
   return (
     <SidebarMenu>
@@ -87,6 +89,17 @@ export function NavUser({
                 </div>
               </div>
             </DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            >
+              {theme === "dark" ? (
+                <Sun className="mr-2" />
+              ) : (
+                <Moon className="mr-2" />
+              )}
+              {theme === "dark" ? "Light Mode" : "Dark Mode"}
+            </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
               onClick={() => signOut({ callbackUrl: logoutUrl })}

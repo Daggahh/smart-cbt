@@ -1,6 +1,6 @@
 "use client";
 
-import { Upload, type LucideIcon } from "lucide-react";
+import { PlusCircleIcon, Upload, type LucideIcon } from "lucide-react";
 import Link from "next/link";
 import {
   SidebarGroup,
@@ -25,11 +25,11 @@ export function NavMain({
             <SidebarMenuItem className="flex items-center gap-2 mb-4">
               <SidebarMenuButton
                 asChild
-                className="min-w-8 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold shadow-md hover:scale-[1.03] active:scale-95 transition-transform duration-150 justify-center items-center text-center"
+                className="min-w-8 bg-gradient-to-r from-[#7F5AF0] to-[#2CB67D] text-white font-semibold shadow-md hover:scale-[1.03] active:scale-95 transition-transform duration-150 justify-center items-center text-center border-0 dark:from-[#7F5AF0] dark:to-[#2CB67D]"
               >
                 <Link href="/admin/exams/create">
                   <div className="flex items-center justify-center gap-2 w-full">
-                    <Upload className="w-5 h-5" />
+                    <PlusCircleIcon className="w-5 h-5" />
                     <span>Create Exam</span>
                   </div>
                 </Link>
