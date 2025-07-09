@@ -23,32 +23,32 @@ import Link from "next/link";
 export default function TermsPage() {
   return (
     <AuroraBackground>
-      {/* Back to Home */}
+        {/* Back to Home */}
       <div className="absolute top-6 left-6 z-50">
-        <Link href="/">
+          <Link href="/">
           <button className="group relative inline-flex h-10 sm:h-12 items-center justify-center overflow-hidden rounded-full bg-neutral-900 px-4 sm:px-6 py-2 sm:py-3 text-xs sm:text-sm font-medium text-neutral-300 transition-all duration-300 hover:bg-neutral-800 hover:text-white hover:scale-105 active:scale-95">
-            <span className="relative z-10 flex items-center gap-2">
-              <ArrowLeft className="h-4 w-4 transition-transform group-hover:scale-110" />
-              Back to Home
-            </span>
+              <span className="relative z-10 flex items-center gap-2">
+                <ArrowLeft className="h-4 w-4 transition-transform group-hover:scale-110" />
+                Back to Home
+              </span>
             <span className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 opacity-0 group-hover:opacity-20 transition-opacity duration-300 pointer-events-none" />
           </button>
-        </Link>
+          </Link>
       </div>
-      <div className="container mx-auto px-4 py-16 relative z-10">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <Badge variant="secondary" className="mb-2">
-            Terms of Service
-          </Badge>
-          <p className="text-xl text-neutral-700 dark:text-neutral-300 max-w-2xl mx-auto mt-4 mb-2">
-            These terms govern your use of the Smart CBT platform. Please read
-            them carefully before using our services.
-          </p>
-          <p className="text-sm text-neutral-500 mt-2">
+        <div className="container mx-auto px-4 py-16 relative z-10">
+          {/* Header */}
+          <div className="text-center mb-12">
+            <Badge variant="secondary" className="mb-2">
+              Terms of Service
+            </Badge>
+            <p className="text-xl text-neutral-700 dark:text-neutral-300 max-w-2xl mx-auto mt-4 mb-2">
+              These terms govern your use of the Smart CBT platform. Please read
+              them carefully before using our services.
+            </p>
+            <p className="text-sm text-neutral-500 mt-2">
             Last updated: July 1, 2025
-          </p>
-        </div>
+            </p>
+          </div>
 
         <TracingBeam>
           {/* Key Points */}
@@ -565,32 +565,32 @@ export default function TermsPage() {
           </div>
         </TracingBeam>
 
-        {/* Footer */}
+          {/* Footer */}
         <div className="text-center mt-12 pt-8 mb-8 border-t-2 border-dashed border-neutral-800">
-          <p className="text-neutral-700 dark:text-neutral-400 text-sm mb-4">
+            <p className="text-neutral-700 dark:text-neutral-400 text-sm mb-4">
             By using Smart CBT, you acknowledge that you have read, understood,
             and agree to be bound by these Terms of Service.
-          </p>
+            </p>
           <div className="flex flex-row gap-2 sm:gap-4 justify-center">
-            <Button
-              borderRadius="1.75rem"
+              <Button
+                borderRadius="1.75rem"
               className="bg-black dark:bg-slate-900 text-white dark:text-white border-neutral-200 dark:border-slate-800 transition-all duration-300 hover:bg-neutral-800 hover:text-white hover:scale-105 active:scale-95"
-              as={Link}
-              href="/privacy"
-            >
-              Privacy Policy
-            </Button>
-            <Button
-              borderRadius="1.75rem"
+                as={Link}
+                href="/privacy"
+              >
+                Privacy Policy
+              </Button>
+              <Button
+                borderRadius="1.75rem"
               className="bg-transparent text-black dark:text-white border-slate-800 transition-all duration-300 hover:bg-neutral-800 hover:text-white hover:scale-105 active:scale-95"
-              as={Link}
+                as={Link}
               href="mailto:contact.smartcbt@gmail.com"
-            >
-              Contact Support
-            </Button>
+              >
+                Contact Support
+              </Button>
+            </div>
           </div>
         </div>
-      </div>
     </AuroraBackground>
   );
 }

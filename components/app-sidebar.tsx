@@ -2,7 +2,6 @@
 
 import { SmartCBTLogo } from "@/components/smart-cbt-logo";
 import {
-  Calendar,
   Users,
   BarChart3,
   Shield,
@@ -25,10 +24,11 @@ import {
 import Link from "next/link";
 import * as React from "react";
 import { useSession } from "next-auth/react";
+import { IconDashboard } from "@tabler/icons-react";
 
 // Sidebar nav links for admin
 const adminNavLinks = [
-  { title: "Live Exams", url: "/admin", icon: Calendar },
+  { title: "Overview", url: "/admin", icon: IconDashboard },
   { title: "Candidates", url: "/admin/students", icon: Users },
   { title: "Content", url: "/admin/content", icon: Upload },
   { title: "Analytics", url: "/admin/analytics", icon: BarChart3 },
@@ -69,7 +69,7 @@ export function AppSidebar({
             >
               <Link href="/admin">
                 <SmartCBTLogo className="h-7 w-7" />
-                <span className="text-base font-bold ml-2">Smart CBT</span>
+                <span className="text-base text-gray-900 dark:text-sidebar-foreground font-bold ml-2">Smart CBT</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
